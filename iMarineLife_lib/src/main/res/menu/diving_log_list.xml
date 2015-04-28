@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/diving_log_search"
+        android:actionLayout="@layout/search_diving_log"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/search_hint_log"/>
+    <item
+        android:id="@+id/diving_log_add"
+        android:icon="@android:drawable/ic_menu_add"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/search_hint_log"/>
+    <!-- <item
+        android:id="@+id/diving_log_remove"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/search_hint_log"/> -->
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_settings"/>
+
+</menu>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_selector"
+    android:divider="@null"
+    android:dividerHeight="0dp"
+    android:showDividers="none" xmlns:tools="http://schemas.android.com/tools">
+
+    <nl.imarinelife.lib.utility.RobotoTextView
+        android:id="@+id/fieldguide_progressbar_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="3dp"
+        android:text="@string/fieldguide_willbeupdated"
+        android:textColor="#040404"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
+    
+    <ProgressBar 
+        android:id="@+id/fieldguide_progressbar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fieldguide_progressbar_text"
+        android:layout_centerHorizontal="true"
+        android:progress="0"/>
+
+</RelativeLayout>

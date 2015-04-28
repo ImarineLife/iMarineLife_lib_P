@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/dl_id_ttwdialog_bar_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark"
+        android:gravity="right"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/dl_id_ttwdialog_cancel_button_id"
+            style="@style/iMarineLifeSlenderButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dl_id_dialog_cancel_buttontext" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/dl_id_ttwdialog_choose_button_id"
+            style="@style/iMarineLifeSlenderButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/dl_id_dialog_choose_buttontext" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dl_id_ttwdialog_picker_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dl_id_ttwdialog_bar_id"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+
+        <nl.imarinelife.lib.utility.wheel.TimeWheel
+            android:id="@+id/dl_id_ttwdialog_timepicker_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+</RelativeLayout>

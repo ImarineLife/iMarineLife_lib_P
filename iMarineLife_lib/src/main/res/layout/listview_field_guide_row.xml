@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/list_selector" >
+
+    <LinearLayout
+        android:id="@+id/header_fieldguide_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/dark"
+        android:clickable="true"
+        android:onClick="onFieldGuideListHeaderClick"
+        android:orientation="horizontal"
+        android:visibility="visible" >
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/header_fieldguide_list_groupname"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:padding="3dp"
+            android:paddingLeft="10dp"
+            android:text="@string/lib_name"
+            android:textColor="@color/orange"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:typeface="sans" />
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/header_fieldguide_list_amounts"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:gravity="right"
+            android:padding="3dp"
+            android:paddingLeft="10dp"
+            android:text="@string/empty"
+            android:textColor="@color/orange"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:typeface="sans" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/body_fieldguide_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header_fieldguide_list"
+        android:layout_margin="0dp"
+        android:orientation="horizontal"
+        android:padding="0dp" >
+
+        <ImageView
+            android:id="@+id/image_fieldguide_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="45"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/lib_name"
+            android:padding="0dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_amarinelife_xxhdpi" />
+
+        <RelativeLayout
+            android:id="@+id/body_text_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="55" >
+
+            <nl.imarinelife.lib.utility.RobotoTextView
+                android:id="@+id/text_fieldguide_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:padding="3dp"
+                android:text="@string/lib_name"
+                android:textColor="#040404"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:typeface="sans" />
+
+            <nl.imarinelife.lib.utility.RobotoTextView
+                android:id="@+id/latintext_fieldguide_list"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/text_fieldguide_list"
+                android:padding="3dp"
+                android:textColor="#A4A4A4"
+                android:textSize="12sp"
+                android:textStyle="italic"
+                android:typeface="sans" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

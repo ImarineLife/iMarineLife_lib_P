@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+	<string name="jan">Jan</string>
+	<string name="feb">Feb</string>
+	<string name="mrt">Mrt</string>
+	<string name="apr">Apr</string>
+	<string name="mei">Mei</string>
+	<string name="jun">Juni</string>
+	<string name="jul">Juli</string>
+	<string name="aug">Aug</string>
+	<string name="sep">Sept</string>
+	<string name="okt">Okt</string>
+	<string name="nov">Nov</string>
+	<string name="dec">Dec</string>
+	
+	<string name="monday">ma</string>
+	<string name="tuesday">di</string>
+	<string name="wednesday">wo</string>
+	<string name="thursday">do</string>
+	<string name="friday">vr</string>
+	<string name="saturday">za</string>
+	<string name="sunday">zo</string>	    
+</resources>

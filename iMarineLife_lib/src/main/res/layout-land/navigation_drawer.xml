@@ -1,0 +1,173 @@
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- The main content view -->
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
+
+        <FrameLayout
+            android:id="@+id/content_frame_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?android:attr/colorBackground" />
+
+        <FrameLayout
+            android:id="@+id/content_frame_2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="?android:attr/colorBackground"
+            android:visibility="gone" />
+    </RelativeLayout>
+    <!-- The drawer -->
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/dark"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" >
+
+        <TableLayout
+            android:id="@+id/nav_prefs_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:padding="15dp"
+            android:stretchColumns="1"
+            tools:ignore="UselessParent" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center" >
+
+                <LinearLayout
+                    android:id="@+id/nav_linear_1"
+                    android:layout_span="2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="5"
+                    tools:ignore="UselessParent" >
+
+                    <Button 
+                        android:id="@+id/nav_fieldguide_button"
+                        style="@style/iMarineLifeButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:layout_margin="3dp"
+                        android:padding="20dp"
+                        android:gravity="center"
+                        android:text="@string/fieldguide" />
+
+                    <Button
+                        android:id="@+id/nav_divinglog_button"
+                        style="@style/iMarineLifeButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:layout_margin="3dp"
+                        android:padding="20dp"
+                        android:gravity="center"
+                        android:text="@string/divinglog" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="25dp" >
+
+                <nl.imarinelife.lib.utility.RobotoTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:text="@string/nav_prefs_name_label"
+                    android:textColor="@color/orange"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:typeface="sans" />
+
+                <nl.imarinelife.lib.utility.RobotoEditText
+                    android:id="@+id/nav_prefs_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="text"
+                    android:paddingLeft="7dp"
+                    android:textColor="#040404"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+                    android:typeface="sans" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="20dp" >
+
+                <nl.imarinelife.lib.utility.RobotoTextView
+                    android:id="@+id/nav_prefs_email_lb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:text="@string/nav_prefs_email_label"
+                    android:textColor="@color/orange"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:typeface="sans" />
+
+                <nl.imarinelife.lib.utility.RobotoEditText
+                    android:id="@+id/nav_prefs_email_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="textEmailAddress"
+                    android:paddingLeft="7dp"
+                    android:textColor="#040404"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+                    android:typeface="sans" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="20dp" >
+
+                <nl.imarinelife.lib.utility.RobotoTextView
+                    android:id="@+id/nav_prefs_code_lb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:text="@string/nav_prefs_code_label"
+                    android:textColor="@color/orange"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:typeface="sans" />
+
+                <nl.imarinelife.lib.utility.RobotoEditText
+                    android:id="@+id/nav_prefs_code_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:inputType="text"
+                    android:paddingLeft="7dp"
+                    android:textColor="#040404"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+                    android:typeface="sans" />
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
+
+</android.support.v4.widget.DrawerLayout>

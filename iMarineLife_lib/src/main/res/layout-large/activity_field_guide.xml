@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <fragment android:name="nl.imarinelife.lib.fieldguide.FieldGuideListFragment"
+              android:id="@+id/fragment_fieldguidelist"
+              android:layout_width="300dp"
+              android:layout_height="match_parent"
+              android:layout_alignParentLeft="true" />
+
+    <fragment
+        android:id="@+id/fragment_fieldguideentry"
+        android:name="nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/fragment_fieldguidelist" />
+
+</RelativeLayout>

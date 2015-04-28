@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ack">
+        Acknowledging software used to create this app\n\n
+under http://www.apache.org/licenses/LICENSE-2.0\n
+- ActionbarSherlock (Jake Wharton)\n
+- JSSEProvider (Alexander Y. Kleymenov)\n
+- Wheel Control (Yuri Kanivets)\n
+        </string>
+
+</resources>

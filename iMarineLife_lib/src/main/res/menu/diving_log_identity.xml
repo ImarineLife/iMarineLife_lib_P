@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/diving_log_next"
+        android:icon="@android:drawable/ic_menu_more"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/more_identity_title"/>
+    <item
+        android:id="@+id/diving_log_remarks"
+        android:icon="@drawable/ic_action_new_label"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/remarks"/> 
+     <item
+        android:id="@+id/action_settings"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/action_settings"/>
+
+</menu>

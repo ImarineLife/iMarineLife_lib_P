@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/entryview_fieldguide"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp" >
+
+    <nl.imarinelife.lib.utility.ResizableImageView
+        android:id="@+id/image_fieldguide_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/lib_name"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_amarinelife_xxhdpi" />
+
+    <nl.imarinelife.lib.utility.RobotoTextView
+        android:id="@+id/common_fieldguide_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/image_fieldguide_entry"
+        android:background="#85E5E2DF"
+        android:gravity="center"
+        android:text="@string/lib_name"
+        android:textColor="#040404"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:typeface="sans" />
+
+    <nl.imarinelife.lib.utility.RobotoTextView
+        android:id="@+id/latin_fieldguide_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/image_fieldguide_entry"
+        android:background="#85E5E2DF"
+        android:gravity="center"
+        android:textColor="#040404"
+        android:textSize="17sp"
+        android:textStyle="italic"
+        android:typeface="sans" />
+    
+    <LinearLayout
+        android:id="@+id/sighting_buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/image_fieldguide_entry"
+        android:padding="3dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal" >
+        <RadioGroup 
+            android:id="@+id/sighting_radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"/>
+        <LinearLayout 
+            android:id="@+id/sighting_checkboxes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollview_descr_fieldguide_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/sighting_buttons_layout"
+        android:padding="5dp" >
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/description_fieldguide_entry"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textColor="#040404"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:typeface="sans" />
+    </ScrollView>
+
+    
+
+</RelativeLayout>

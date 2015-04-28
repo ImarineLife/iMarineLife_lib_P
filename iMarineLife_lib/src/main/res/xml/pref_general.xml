@@ -1,0 +1,50 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/iMarineLifePreferenceTheme" >
+
+    <CheckBoxPreference
+        android:key="personalDefaultChoice"
+        android:persistent="true"
+        android:summary="@string/pref_description_checkbox_usedefault2"
+        android:title="@string/pref_description_checkbox_usedefault2_title" />
+    <CheckBoxPreference
+        android:key="SendToMeInCC"
+        android:persistent="true"
+        android:summary="@string/pref_description_checkbox_sendemail"
+        android:title="@string/pref_description_checkbox_sendemail_title" />
+
+    <nl.imarinelife.lib.utility.TextViewPreference
+        style="@style/iMarineLifePreferenceTheme"
+        android:key="intro"
+        android:negativeButtonText="@string/empty"
+        android:persistent="false"
+        android:positiveButtonText="@string/dl_id_dialog_ok_buttontext"
+        android:summary="@string/pref_description_textView_intro"
+        android:title="@string/pref_description_textView_intro_title" />
+    <nl.imarinelife.lib.utility.TextViewPreference
+        style="@style/iMarineLifePreferenceTheme"
+        android:key="help"
+        android:negativeButtonText="@string/empty"
+        android:persistent="false"
+        android:positiveButtonText="@string/dl_id_dialog_ok_buttontext"
+        android:summary="@string/pref_description_textView_help"
+        android:title="@string/pref_description_textView_help_title"
+         />
+    <nl.imarinelife.lib.utility.TextViewPreference
+        style="@style/iMarineLifePreferenceTheme"
+        android:key="dank"
+        android:negativeButtonText="@string/empty"
+        android:persistent="false"
+        android:positiveButtonText="@string/dl_id_dialog_ok_buttontext"
+        android:summary="@string/pref_description_textView_dank"
+        android:title="@string/pref_description_textView_dank_title" />
+    <nl.imarinelife.lib.utility.TextViewPreference
+        style="@style/iMarineLifePreferenceTheme"
+        android:key="ack"
+        android:negativeButtonText="@string/empty"
+        android:persistent="false"
+        android:positiveButtonText="@string/dl_id_dialog_ok_buttontext"
+        android:summary="@string/pref_description_textView_ack"
+        android:title="@string/pref_description_textView_ack_title" />
+
+   
+</PreferenceScreen>

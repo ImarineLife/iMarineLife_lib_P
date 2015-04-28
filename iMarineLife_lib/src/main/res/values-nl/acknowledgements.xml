@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="ack">
+        Bronvermeldingen voor de software die gebruikt is om deze app mogelijk te maken\n\n       
+onder http://www.apache.org/licenses/LICENSE-2.0\n
+- JSSEProvider (Alexander Y. Kleymenov)\n
+- Wheel Control (Yuri Kanivets)\n
+        </string>
+
+</resources>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/entryview_fieldguide"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp"
+    >
+	<nl.imarinelife.lib.utility.ResizableImageView
+	    android:id="@+id/image_fieldguide_entry"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:contentDescription="@string/lib_name"
+	    android:padding="0dp"
+	    android:scaleType="centerCrop"
+	    android:src="@drawable/ic_launcher_amarinelife_xxhdpi"
+	    android:adjustViewBounds="true" />
+    
+    <nl.imarinelife.lib.utility.RobotoTextView
+        android:id="@+id/common_fieldguide_entry" 
+        android:text="@string/lib_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#85E5E2DF"
+        android:gravity="center"
+        android:layout_alignTop="@id/image_fieldguide_entry"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        />
+    
+    <nl.imarinelife.lib.utility.RobotoTextView
+        android:id="@+id/latin_fieldguide_entry" 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#85E5E2DF"
+        android:layout_alignBottom="@id/image_fieldguide_entry"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="17sp"
+        android:gravity="center"
+        android:textStyle="italic"
+        />
+    <ScrollView android:id="@+id/scrollview_descr_fieldguide_entry"
+        android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:layout_alignParentLeft="true"
+	    android:padding="5dp"
+	    android:layout_below="@id/image_fieldguide_entry"
+	    >
+	<nl.imarinelife.lib.utility.RobotoTextView android:id="@+id/description_fieldguide_entry"
+	    android:layout_height="wrap_content"
+	    android:layout_width="fill_parent"
+	    android:padding="5dp"
+	    android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="16sp"
+        android:textStyle="normal"
+    />
+	</ScrollView>
+
+
+</RelativeLayout>

@@ -1,0 +1,110 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
+
+
+
+    -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!--
+    <style name="AppBaseTheme" parent="@android:style/Theme.Dialog">
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+
+
+
+
+        -->
+    </style>
+
+    <style name="DialogBaseTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:background">@color/white</item>
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+
+
+
+
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="iMarineLifeAppTheme" parent="AppBaseTheme">
+        <item name="android:divider">@color/orange</item>
+        <item name="android:childDivider">@color/orange</item>
+    </style>
+
+    <style name="iMarineLifeDialogTheme" parent="DialogBaseTheme">
+        <item name="android:divider">@color/orange</item>
+        <item name="android:childDivider">@color/orange</item>
+    </style>
+
+    <style name="iMarineLifePreferenceTheme" parent="AppBaseTheme">
+        <item name="android:background">@color/dark</item>
+        <item name="android:checkMark">@drawable/checkbox_selector</item>
+        <item name="android:textColorHint">@color/orange</item>
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textColorPrimary">@color/orange</item>
+        <item name="android:textColorSecondary">@color/orange</item>
+        <item name="android:textColorTertiary">@color/orange</item>
+        <item name="android:divider">@color/orange</item>
+        <item name="android:childDivider">@color/orange</item>
+    </style>
+
+    <style name="iMarineLifeButtonStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">23sp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+    </style>
+
+    <style name="iMarineLifeSlenderButtonStyle">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_selector</item>
+        <item name="android:textColor">@color/orange</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
+
+    <style name="iMarineLifeRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/radiobutton_selector</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:width">25dp</item>
+        <item name="android:height">25dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="iMarineLifeBigRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/radiobutton_selector</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:width">35dp</item>
+        <item name="android:height">35dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="iMarineLifeCheckboxStyle" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/checkbox_selector</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+</resources>

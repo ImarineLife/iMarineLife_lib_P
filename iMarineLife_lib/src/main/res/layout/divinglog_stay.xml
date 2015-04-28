@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/divinglog_stay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="25dp"
+    android:stretchColumns="1" >
+
+    <!-- all is filled runtime because fields may differ for different catalogs -->
+
+
+    
+</TableLayout>

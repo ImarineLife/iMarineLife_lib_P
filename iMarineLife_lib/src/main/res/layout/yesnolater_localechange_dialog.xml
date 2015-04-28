@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/general_bar1_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark"
+        android:gravity="right"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/general_no_button_id"
+            style="@style/iMarineLifeSlenderButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/general_dialog_no_buttontext" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/general_yes_button_id"
+            style="@style/iMarineLifeSlenderButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/general_dialog_yes_buttontext" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/general_later_button_id"
+            style="@style/iMarineLifeSlenderButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/general_dialog_later_buttontext" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/general_picker_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/general_bar1_id"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="30dp" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/general_textview_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:visibility="invisible" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/progress_section_localechange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/general_picker_id"
+        android:background="@drawable/list_selector"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:showDividers="none" >
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/localechange_progressbar_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:text="@string/localechange_willbeupdated"
+            android:textColor="#040404"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/localechange_progressbar1"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/localechange_progressbar_text"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:paddingBottom="5dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/orangeprogress" />
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/localechange_progressbar1_inside_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/localechange_progressbar1"
+            android:layout_alignLeft="@id/localechange_progressbar1"
+            android:layout_alignRight="@id/localechange_progressbar1"
+            android:layout_alignTop="@id/localechange_progressbar1"
+            android:layout_margin="5dp"
+            android:background="#00000000"
+            android:text="@string/localechange_locations"
+            android:textColor="#040404"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <ProgressBar
+            android:id="@+id/localechange_progressbar2"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/localechange_progressbar1"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:paddingBottom="5dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/orangeprogress" />
+
+        <nl.imarinelife.lib.utility.RobotoTextView
+            android:id="@+id/localechange_progressbar2_inside_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/localechange_progressbar2"
+            android:layout_alignLeft="@id/localechange_progressbar2"
+            android:layout_alignRight="@id/localechange_progressbar2"
+            android:layout_alignTop="@id/localechange_progressbar2"
+            android:layout_margin="5dp"
+            android:background="#00000000"
+            android:text="@string/localechange_fieldguide"
+            android:textColor="#040404"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+</RelativeLayout>
