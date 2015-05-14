@@ -8,24 +8,30 @@ import java.util.Map;
 import nl.imarinelife.lib.LibApp;
 import nl.imarinelife.lib.MainActivity;
 import nl.imarinelife.lib.MarineLifeContentProvider;
+import nl.imarinelife.lib.Preferences;
 import nl.imarinelife.lib.R;
 import nl.imarinelife.lib.catalog.Catalog;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
+import nl.imarinelife.lib.utility.DivingLogGestureListener;
+import nl.imarinelife.lib.utility.FilterCursorWrapper;
+import nl.imarinelife.lib.utility.SingletonCursor;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -36,12 +42,15 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class DivingLogSightingsEntryFragment extends Fragment implements
 		OnCheckedChangeListener, OnClickListener {
 
 	private static String TAG = "DivingLogSightingsEntryFragment";
+	private GestureDetector gesturedetector = null;
+
 	private View entry = null;
 	private Sighting sighting = null;
 
@@ -63,6 +72,7 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	public String checkValues;
 
 	private long shownId = 0L;
+	DivingLogSightingsEntryPagerAdapter	pagerAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,22 +83,53 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		if (savedInstanceState != null) {
-			// Restore last state for checked position.
-			shownId = savedInstanceState.getLong(FieldGuideEntry.ID, 0L);
-		} else {
-			Bundle arguments = getArguments();
-			if (arguments != null) {
-				shownId = arguments.getLong(FieldGuideEntry.ID, 0L);
-			} else {
-				shownId = 0L;
-			}
+
+		if (savedInstanceState == null) {
+			savedInstanceState = getArguments();
 		}
+		if (savedInstanceState == null) {
+			savedInstanceState = new Bundle();
+		}
+		shownId = savedInstanceState.getLong(FieldGuideEntry.ID, 0L);
+
+		initializePagerAdapter(savedInstanceState);
+
 
 		Log.d(TAG, "onCreateView: Id found in savedInstanceState: " + shownId);
 
+		gesturedetector = new GestureDetector(getActivity(),
+				new DivingLogSightingsEntryFragmentGestureListener());
+		container.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				gesturedetector.onTouchEvent(event);
+				return true;
+			}
+
+		});
+
+
 		// Inflate the layout for this fragment
 		entry = inflater.inflate(R.layout.entry_sighting, container, false);
+		// and set the onTouchListener
+		entry.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				gesturedetector.onTouchEvent(event);
+				return true;
+			}
+		});
+
+		// set the onTouchListener separately on the scrollView because that will gobble up the swipe
+		ScrollView view = (ScrollView) entry.findViewById(R.id.scrollview_descr_fieldguide_entry);
+		view.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return gesturedetector.onTouchEvent(event);
+			}
+		});
+
 		commonView = (TextView) entry
 				.findViewById(R.id.common_fieldguide_entry);
 		latinView = (TextView) entry.findViewById(R.id.latin_fieldguide_entry);
@@ -167,6 +208,30 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 		return entry;
 	}
 
+	private void initializePagerAdapter(Bundle savedInstanceState) {
+		int position = savedInstanceState.getInt(DivingLogSightingsListFragment.CHECKED_POSITION,
+				0);
+		String constraint = savedInstanceState.getString(DivingLogSightingsListFragment.CONSTRAINT);
+		int diveNr = MainActivity.me.currentDive.getDiveNr();
+		if (SingletonCursor.getCursor() == null || SingletonCursor.getCursor().isClosed()) {
+			FieldGuideAndSightingsEntryDbHelper dbHelper = FieldGuideAndSightingsEntryDbHelper.getInstance(this.getActivity());
+			SingletonCursor.swapCursor(dbHelper.queryFieldGuideFilledForDive(diveNr));
+			if (constraint != null && constraint.length() != 0) {
+				int[] columnsToSearch_s2 = { FieldGuideAndSightingsEntryDbHelper.KEY_COMMONNAME_CURSORLOC,
+						FieldGuideAndSightingsEntryDbHelper.KEY_LATINNAME_CURSORLOC };
+				Map<Integer, Map<String, Integer>> columnsToLocalize_s2 = new HashMap<Integer, Map<String, Integer>>();
+				columnsToLocalize_s2
+						.put(FieldGuideAndSightingsEntryDbHelper.KEY_COMMONNAME_CURSORLOC,
+								LibApp.getInstance().getCurrentCatalog()
+										.getCommonIdMapping());
+				SingletonCursor.swapCursor(new FilterCursorWrapper(SingletonCursor.getCursor(), constraint, Preferences.SIGHTINGS_GROUPS_HIDDEN, FieldGuideAndSightingsEntryDbHelper.KEY_GROUPNAME_CURSORLOC, columnsToSearch_s2, columnsToLocalize_s2, FieldGuideAndSightingsEntryDbHelper.CODE_TO_SHOWVALUE_COLUMNMAPPING));
+			}
+		}
+
+		pagerAdapter = new DivingLogSightingsEntryPagerAdapter(SingletonCursor.getCursor(), position, this);
+
+	}
+
 	protected void saveSightingInDive() {
 		Log.d(TAG, "saveSightingInDive");
 
@@ -212,9 +277,9 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 		// inflater);
 
 		inflater.inflate(R.menu.sightings_entry, menu);
-        ActionBarActivity act = MainActivity.me;
-        if(act!= null && act.getSupportActionBar()!=null) {
-            act.getSupportActionBar().setHomeButtonEnabled(true);
+        Activity act = MainActivity.me;
+        if(act!= null && act.getActionBar()!=null) {
+            act.getActionBar().setHomeButtonEnabled(true);
         }else{
             Log.d(TAG, "no Activity to set the HomeButton enabled for");
         }
@@ -241,6 +306,11 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 
 	public long getShownId() {
 		return shownId;
+	}
+
+	public void setSighting(Sighting sighting){
+		this.sighting=sighting;
+		setData(sighting.fieldguide_id);
 	}
 
 	public void setData(long fieldguideId) {
@@ -404,17 +474,17 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	}
 
 	public void onBackStackChanged() {
-        ActionBarActivity act = MainActivity.me;
-        ActionBar bar = act.getSupportActionBar();
-		act.getSupportActionBar().setHomeButtonEnabled(true);
+        Activity act = MainActivity.me;
+        ActionBar bar = act.getActionBar();
+		act.getActionBar().setHomeButtonEnabled(true);
 		int backStackEntryCount = getActivity()
-				.getSupportFragmentManager().getBackStackEntryCount();
+				.getFragmentManager().getBackStackEntryCount();
 		Log.d(TAG, "backstackEntryCount[" + backStackEntryCount + "]");
 		if (backStackEntryCount > 0) {
-			getActivity().getActionBar()
+			MainActivity.me.getActionBar()
 					.setDisplayHomeAsUpEnabled(true);
 		} else {
-			getActivity().getActionBar()
+			MainActivity.me.getActionBar()
 					.setDisplayHomeAsUpEnabled(false);
 		}
 
@@ -487,6 +557,35 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 		}
 
 		saveSightingInDive();
+
+	}
+
+	private class DivingLogSightingsEntryFragmentGestureListener extends DivingLogGestureListener {
+
+		@Override
+		protected void onLeftSwipe() {
+			Log.d(TAG, "onLeftSwipe: back");
+			if(getView()!=null) {
+				View withFocus = getView().findFocus();
+				if (withFocus != null) {
+					withFocus.clearFocus();
+				}
+			}
+			pagerAdapter.fillBeforeEntry(DivingLogSightingsEntryFragment.this);
+
+		}
+
+		@Override
+		protected void onRightSwipe() {
+			Log.d(TAG, "onRightSwipe: next");
+			if(getView()!=null) {
+				View withFocus = getView().findFocus();
+				if (withFocus != null) {
+					withFocus.clearFocus();
+				}
+			}
+			pagerAdapter.fillNextEntry(DivingLogSightingsEntryFragment.this);
+		}
 
 	}
 }

@@ -918,7 +918,7 @@ public class DiveDbHelper implements DbHelper {
 			mCursor.moveToFirst();
 			value = mCursor.getInt(0);
 		}
-
+		mCursor.close();
 		return value;
 	}
 

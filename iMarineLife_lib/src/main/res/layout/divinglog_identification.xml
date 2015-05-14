@@ -3,7 +3,7 @@
     android:id="@+id/scrollview_descr_fieldguide_entry"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="5dp" >
+    android:padding="5dp">
 
     <TableLayout
         android:id="@+id/divinglog_identification"

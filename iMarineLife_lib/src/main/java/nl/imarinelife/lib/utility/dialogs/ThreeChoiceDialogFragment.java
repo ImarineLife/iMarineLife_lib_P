@@ -5,9 +5,9 @@ import java.io.Serializable;
 import nl.imarinelife.lib.R;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +33,9 @@ public class ThreeChoiceDialogFragment extends DialogFragment {
 	public static final String KEY_INT_PROGRESSBAR_LOCATIONS = "progressBarLocations";
 	public static final String KEY_INT_PROGRESSBAR_FIELDGUIDE = "progressBarFieldguide";
 	public static final String KEY_BOOL_SHOULDSHOWSTATUS = "shouldShowStatus";
+	public static final String KEY_OBJ_ONE_LISTENER		= "oneListener";
+	public static final String KEY_OBJ_TWO_LISTENER		= "twoListener";
+	public static final String KEY_OBJ_THREE_LISTENER		= "threeListener";
 
 	String displayTxt = null;
 	Button one = null;
@@ -127,7 +130,16 @@ public class ThreeChoiceDialogFragment extends DialogFragment {
 		progressbarFieldGuideId = bundle.getInt(KEY_INT_PROGRESSBAR_FIELDGUIDE);
 		progressbarLocationsId = bundle.getInt(KEY_INT_PROGRESSBAR_LOCATIONS);
 		shouldShowStatus = bundle.getBoolean(KEY_BOOL_SHOULDSHOWSTATUS);
+		if(bundle.getSerializable(KEY_OBJ_ONE_LISTENER)!=null) {
+			oneListener = (OnOneListener) bundle.getSerializable(KEY_OBJ_ONE_LISTENER);
+		}
+		if(bundle.getSerializable(KEY_OBJ_TWO_LISTENER)!=null) {
+			twoListener = (OnTwoListener) bundle.getSerializable(KEY_OBJ_TWO_LISTENER);
 
+		}
+		if(bundle.getSerializable(KEY_OBJ_THREE_LISTENER)!=null) {
+			threeListener = (OnThreeListener) bundle.getSerializable(KEY_OBJ_THREE_LISTENER);
+		}
 		setStyle(style, theme);
 	}
 
@@ -147,7 +159,15 @@ public class ThreeChoiceDialogFragment extends DialogFragment {
 		args.putInt(KEY_INT_PROGRESSBAR_FIELDGUIDE, progressbarFieldGuideId);
 		args.putBoolean(KEY_BOOL_SHOULDSHOWSTATUS, shouldShowStatus);
 		super.onSaveInstanceState(args);
-
+		if(oneListener!=null) {
+			args.putSerializable(KEY_OBJ_ONE_LISTENER, oneListener);
+		}
+		if(twoListener!=null) {
+			args.putSerializable(KEY_OBJ_TWO_LISTENER, twoListener);
+		}
+		if(threeListener!=null) {
+			args.putSerializable(KEY_OBJ_THREE_LISTENER, threeListener);
+		}
 	}
 
 	@Override

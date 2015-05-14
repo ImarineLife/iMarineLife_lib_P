@@ -15,12 +15,12 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class SightingsAsIsSimpleCursorAdapter extends SimpleCursorAdapter {
@@ -28,7 +28,7 @@ public class SightingsAsIsSimpleCursorAdapter extends SimpleCursorAdapter {
 	private final static String TAG = "SghtngAsIsSCAdapter";
 	public static String ID = "id";
 
-	public SightingsAsIsSimpleCursorAdapter(Context context, int layout,
+	public SightingsAsIsSimpleCursorAdapter(final Context context, int layout,
 			Cursor c, String[] from, int[] to, int flag) {
 		super(context, layout, c, from, to, flag);
 
@@ -79,7 +79,7 @@ public class SightingsAsIsSimpleCursorAdapter extends SimpleCursorAdapter {
 							String packagename = "nl.imarinelife."
 									+ entryCatalog.toLowerCase();
 							try {
-								Context otherContext = mContext
+								Context otherContext = context
 										.createPackageContext(packagename, 0);
 								AssetManager manager = otherContext.getAssets();
 								bm = FieldGuideEntry

@@ -8,7 +8,7 @@
 
 
     -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppBaseTheme" parent="@android:style/Theme.Holo.Light.DarkActionBar">
         <!--
     <style name="AppBaseTheme" parent="@android:style/Theme.Dialog">
             Theme customizations available in newer API levels can go in
@@ -21,8 +21,8 @@
         -->
     </style>
 
-    <style name="DialogBaseTheme" parent="@android:style/Theme.Dialog">
-        <item name="android:background">@color/white</item>
+
+    <style name="DialogBaseTheme" parent="@android:style/Theme.Holo.Light.Dialog">
         <!--
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
@@ -46,15 +46,7 @@
     </style>
 
     <style name="iMarineLifePreferenceTheme" parent="AppBaseTheme">
-        <item name="android:background">@color/dark</item>
-        <item name="android:checkMark">@drawable/checkbox_selector</item>
-        <item name="android:textColorHint">@color/orange</item>
-        <item name="android:textColor">@color/orange</item>
-        <item name="android:textColorPrimary">@color/orange</item>
-        <item name="android:textColorSecondary">@color/orange</item>
-        <item name="android:textColorTertiary">@color/orange</item>
-        <item name="android:divider">@color/orange</item>
-        <item name="android:childDivider">@color/orange</item>
+        <!-- put app specific styles in the specific app -->
     </style>
 
     <style name="iMarineLifeButtonStyle">
@@ -85,9 +77,9 @@
         <item name="android:button">@drawable/radiobutton_selector</item>
         <item name="android:textColor">@color/dark</item>
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:width">25dp</item>
-        <item name="android:height">25dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:width">28dp</item>
+        <item name="android:height">28dp</item>
         <item name="android:gravity">center</item>
     </style>
 
@@ -96,8 +88,8 @@
         <item name="android:textColor">@color/dark</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:width">35dp</item>
-        <item name="android:height">35dp</item>
+        <item name="android:width">40dp</item>
+        <item name="android:height">40dp</item>
         <item name="android:gravity">center</item>
     </style>
 

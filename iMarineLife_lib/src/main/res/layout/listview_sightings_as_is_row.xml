@@ -16,27 +16,27 @@
         <nl.imarinelife.lib.utility.RobotoTextView
             android:id="@+id/header_sightings_asis_list_groupname"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:clickable="true"
             android:onClick="onSightingsListHeaderClick"
             android:padding="3dp"
             android:paddingLeft="10dp"
             android:text="@string/lib_name"
             android:textColor="@color/orange"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:typeface="sans" />
 
         <nl.imarinelife.lib.utility.RobotoTextView
             android:id="@+id/header_sightings_asis_list_amounts"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:gravity="right"
             android:padding="3dp"
             android:paddingLeft="10dp"
             android:text="@string/empty"
             android:textColor="@color/orange"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:typeface="sans" />
     </LinearLayout>

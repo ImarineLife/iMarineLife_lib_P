@@ -23,42 +23,43 @@ public abstract class DivingLogGestureListener extends GestureDetector.SimpleOnG
 	float velocityY) {
 		Log.d(TAG,"onFling- Swipe");
 
-		float dX = e2.getX() - e1.getX();
+		if(e2 != null && e1 != null) {
+			float dX = e2.getX() - e1.getX();
 
-		float dY = e1.getY() - e2.getY();
+			float dY = e1.getY() - e2.getY();
 
-		if (Math.abs(dY) < SWIPE_MAX_OFF_PATH &&
+			if (Math.abs(dY) < SWIPE_MAX_OFF_PATH &&
 
-		Math.abs(velocityX) >= SWIPE_THRESHOLD_VELOCITY &&
+					Math.abs(velocityX) >= SWIPE_THRESHOLD_VELOCITY &&
 
-		Math.abs(dX) >= SWIPE_MIN_DISTANCE) {
+					Math.abs(dX) >= SWIPE_MIN_DISTANCE) {
 
-			if (dX > 0) {
-				onLeftSwipe();
-			} else {
-				onRightSwipe();
+				if (dX > 0) {
+					onLeftSwipe();
+				} else {
+					onRightSwipe();
+				}
+
+				return true;
+
+			} else if (Math.abs(dX) < SWIPE_MAX_OFF_PATH &&
+
+					Math.abs(velocityY) >= SWIPE_THRESHOLD_VELOCITY &&
+
+					Math.abs(dY) >= SWIPE_MIN_DISTANCE) {
+
+				if (dY > 0) {
+					onUpSwipe();
+				} else {
+					onDownSwipe();
+				}
+
+				return true;
+
 			}
-
-			return true;
-
-		} else if (Math.abs(dX) < SWIPE_MAX_OFF_PATH &&
-
-		Math.abs(velocityY) >= SWIPE_THRESHOLD_VELOCITY &&
-
-		Math.abs(dY) >= SWIPE_MIN_DISTANCE) {
-
-			if (dY > 0) {
-				onUpSwipe();
-			} else {
-				onDownSwipe();
-			}
-
-			return true;
 
 		}
-
 		return false;
-
 	}
 
 	protected void onLeftSwipe(){};

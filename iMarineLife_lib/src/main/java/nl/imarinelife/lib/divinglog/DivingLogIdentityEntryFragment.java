@@ -25,14 +25,14 @@ import nl.imarinelife.lib.utility.dialogs.TextWheelDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.TextWheelDialogFragment.OnTextCompleteListener;
 import nl.imarinelife.lib.utility.dialogs.TimeWheelDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.TimeWheelDialogFragment.OnTimeCompleteListener;
+
+import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
@@ -45,6 +45,7 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AutoCompleteTextView;
@@ -121,16 +122,11 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		gesturedetector = new GestureDetector(getActivity(),
 				new MyDivingLogGestureListener());
 		container.setOnTouchListener(new OnTouchListener() {
-
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-
 				gesturedetector.onTouchEvent(event);
-
 				return true;
-
 			}
-
 		});
 
 		// Inflate the layout for this fragment
@@ -157,6 +153,28 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		if(buddyCode!=null){
 			if(LibApp.getInstance().getCurrentCatalog()!=null && LibApp.getInstance().getCurrentCatalog().isCodeHidden()){
 				((View)buddyCode.getParent()).setVisibility(View.GONE);
+			}else{
+				buddyCode.setRawInputType(InputType.TYPE_CLASS_TEXT);
+
+				buddyCode.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+					@Override
+					public void onFocusChange(View v, boolean hasFocus) {
+						Log.d(TAG, "focuschange " + hasFocus);
+						if (!hasFocus) {
+							Editable codeView = ((EditText) v).getText();
+							Dive dive = MainActivity.me.currentDive;
+							if (codeView != null) {
+								String code = codeView.toString();
+								dive.setBuddyCode(code);
+							} else {
+								dive.setBuddyCode(null);
+							}
+							MainActivity.me.currentDive.setChanged(true);
+							MainActivity.me.currentDive.setBuddyCodeChanged(true);
+						}
+					}
+				});
 			}
 		}
 
@@ -222,27 +240,10 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 					}
 					MainActivity.me.currentDive.setChanged(true);
 					MainActivity.me.currentDive.setBuddyEmailChanged(true);
-				}
-			}
-		});
-		buddyCode.setRawInputType(InputType.TYPE_CLASS_TEXT);
-
-		buddyCode.setOnFocusChangeListener(new OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				Log.d(TAG, "focuschange " + hasFocus);
-				if (!hasFocus) {
-					Editable codeView = ((EditText) v).getText();
-					Dive dive = MainActivity.me.currentDive;
-					if (codeView != null) {
-						String code = codeView.toString();
-						dive.setBuddyCode(code);
-					} else {
-						dive.setBuddyCode(null);
+				}else{
+					if(LibApp.getInstance().getCurrentCatalog()!=null && LibApp.getInstance().getCurrentCatalog().isCodeHidden()){
+						((EditText)v).setImeOptions(EditorInfo.IME_ACTION_DONE);
 					}
-					MainActivity.me.currentDive.setChanged(true);
-					MainActivity.me.currentDive.setBuddyCodeChanged(true);
 				}
 			}
 		});
@@ -466,7 +467,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 								&& !name.equals(dive.getBuddyNameSelected())) {
 							AreYouSureDialogFragment fragment = getAreYouSureBuddyChangedFragment(getActivity());
 							FragmentTransaction ft = (getActivity())
-									.getSupportFragmentManager()
+									.getFragmentManager()
 									.beginTransaction();
 							ft.addToBackStack(null);
 							fragment.show(ft, "adddialog");
@@ -485,7 +486,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 			}
 
 			private AreYouSureDialogFragment getAreYouSureBuddyChangedFragment(
-					FragmentActivity activity) {
+					Activity activity) {
 				final int layoutId;
 				final int textViewId;
 				final int yesbuttonId;
@@ -619,16 +620,18 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		Log.d(TAG, "onOptionsItemSelected: [" + item.getItemId() + "]");
 
 		if (item.getItemId() == R.id.diving_log_next) {
-			View withFocus = this.getView().findFocus();
-			if (withFocus != null) {
-				withFocus.clearFocus();
-			}
+            if(getView()!=null) {
+                View withFocus = this.getView().findFocus();
+                if (withFocus != null) {
+                    withFocus.clearFocus();
+                }
 
-			boolean succes = ((MainActivity) getActivity())
-					.saveDive(true);
-			if (succes) {
-				return activateDivingLogStayEntryFragment();
-			}
+                boolean succes = ((MainActivity) getActivity())
+                        .saveDive(true);
+                if (succes) {
+                    return activateDivingLogStayEntryFragment();
+                }
+            }
 		} else if (item.getItemId() == R.id.diving_log_remarks) {
 			EditTextDialogFragment fragment = getRemarksDialogFragment();
 			showDialog(fragment);
@@ -648,7 +651,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		switch (((MainActivity) getActivity()).getNumberOfPanes()) {
 		case 1:
 			FragmentTransaction transaction = getActivity()
-					.getSupportFragmentManager().beginTransaction();
+					.getFragmentManager().beginTransaction();
 			transaction = ((MainActivity) getActivity()).addOrReplaceFragment(
 					R.id.content_frame_1, transaction, fragment,
 					MainActivity.FRAME1);
@@ -657,7 +660,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 			break;
 		case 2:
 			FragmentTransaction transaction2 = getActivity()
-					.getSupportFragmentManager().beginTransaction();
+					.getFragmentManager().beginTransaction();
 			transaction = ((MainActivity) getActivity()).addOrReplaceFragment(
 					R.id.content_frame_2, transaction2, fragment,
 					MainActivity.FRAME2);
@@ -739,32 +742,36 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		@Override
 		protected void onLeftSwipe() {
 			Log.d(TAG, "onLeftSwipe");
-			View withFocus = getView().findFocus();
-			if (withFocus != null) {
-				withFocus.clearFocus();
-			}
-			boolean succes = ((MainActivity) getActivity())
-					.saveDive(false);
-			if (succes) {
-				FragmentManager manager = getFragmentManager();
-				if (manager != null)
-					manager.popBackStackImmediate();
+            if(getView()!=null) {
+                View withFocus = getView().findFocus();
+                if (withFocus != null) {
+                    withFocus.clearFocus();
+                }
+                boolean succes = ((MainActivity) getActivity())
+                        .saveDive(false);
+                if (succes) {
+                    FragmentManager manager = getFragmentManager();
+                    if (manager != null)
+                        manager.popBackStackImmediate();
 
-			}
+                }
+            }
 		}
 
 		@Override
 		protected void onRightSwipe() {
 			Log.d(TAG, "onLeftSwipe: activate stay page");
-			View withFocus = getView().findFocus();
-			if (withFocus != null) {
-				withFocus.clearFocus();
-			}
-			boolean succes = ((MainActivity) getActivity())
-					.saveDive(true);
-			if (succes) {
-				activateDivingLogStayEntryFragment();
-			}
+            if(getView()!=null) {
+                View withFocus = getView().findFocus();
+                if (withFocus != null) {
+                    withFocus.clearFocus();
+                }
+                boolean succes = ((MainActivity) getActivity())
+                        .saveDive(true);
+                if (succes) {
+                    activateDivingLogStayEntryFragment();
+                }
+            }
 		}
 
 	}

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="25dp"
-    android:stretchColumns="1" >
+    android:stretchColumns="1">
 
     <!-- all is filled runtime because fields may differ for different catalogs -->
 

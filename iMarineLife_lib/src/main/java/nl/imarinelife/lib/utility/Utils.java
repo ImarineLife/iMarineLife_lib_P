@@ -3,9 +3,9 @@ package nl.imarinelife.lib.utility;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.app.Fragment;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 

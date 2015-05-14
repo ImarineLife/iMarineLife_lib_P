@@ -9,17 +9,16 @@ import nl.imarinelife.lib.divinglog.db.dive.DiveDbHelper;
 import nl.imarinelife.lib.divinglog.db.dive.DiveSimpleCursorAdapter;
 import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsListFragment;
 import nl.imarinelife.lib.utility.Utils;
+
 import android.annotation.SuppressLint;
+import android.app.FragmentTransaction;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -27,10 +26,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 
 
 public class DivingLogListFragment extends ListFragment implements
-        android.support.v7.widget.SearchView.OnQueryTextListener, android.support.v7.widget.SearchView.OnCloseListener,
+        SearchView.OnQueryTextListener, SearchView.OnCloseListener,
 		LoaderManager.LoaderCallbacks<Cursor> {
 
 	public static final String TAG = "DivingLogListFragment";
@@ -76,7 +76,6 @@ public class DivingLogListFragment extends ListFragment implements
 		}
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -103,7 +102,7 @@ public class DivingLogListFragment extends ListFragment implements
 			// restore actionbar displayoptions (like up icon)
 			int savedDisplayOpt = savedInstanceState.getInt(KEY_DISPLAY_OPT);
 			if (savedDisplayOpt != 0) {
-				getActivity().getActionBar().setDisplayOptions(
+				MainActivity.me.getActionBar().setDisplayOptions(
 						savedDisplayOpt);
 			}
 			if (android.os.Build.VERSION.SDK_INT >= 11) {
@@ -182,8 +181,9 @@ public class DivingLogListFragment extends ListFragment implements
 		getActivity().getMenuInflater().inflate(
 				R.menu.diving_log_list, menu);
 		MenuItem searchItem = menu.findItem(R.id.diving_log_search);
-		searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        if(searchView!=null) {
+		searchView = new SearchView(getActivity());
+		searchItem.setActionView(searchView);
+		if(searchView!=null) {
             searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
         }
@@ -202,7 +202,7 @@ public class DivingLogListFragment extends ListFragment implements
 			switch (((MainActivity) getActivity()).getNumberOfPanes()) {
 			case 1:
 				FragmentTransaction transaction = getActivity()
-						.getSupportFragmentManager().beginTransaction();
+						.getFragmentManager().beginTransaction();
 				transaction = ((MainActivity) getActivity())
 						.addOrReplaceFragment(R.id.content_frame_1,
 								transaction, fragment, MainActivity.FRAME1);
@@ -211,7 +211,7 @@ public class DivingLogListFragment extends ListFragment implements
 				return true;
 			case 2:
 				FragmentTransaction transaction2 = getActivity()
-						.getSupportFragmentManager().beginTransaction();
+						.getFragmentManager().beginTransaction();
 				transaction = ((MainActivity) getActivity())
 						.addOrReplaceFragment(R.id.content_frame_2,
 								transaction2, fragment, MainActivity.FRAME2);
@@ -235,7 +235,7 @@ public class DivingLogListFragment extends ListFragment implements
 		super.onSaveInstanceState(outState);
 		outState.putLong(DiveSimpleCursorAdapter.ID, mCurId);
 		outState.putInt(KEY_DISPLAY_OPT, MainActivity.me
-				.getSupportActionBar().getDisplayOptions());
+				.getActionBar().getDisplayOptions());
 		outState.putInt(KEY_CURRENTPOSITION, checkedPosition);
 		Log.d(TAG, "storing top position["+topPosition+"]");
 		outState.putInt(KEY_TOP_POSITION, topPosition);

@@ -11,11 +11,10 @@ import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.utility.FilterCursorWrapper;
 import nl.imarinelife.lib.utility.SingletonCursor;
 
+import android.app.ActionBar;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,13 +24,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 //public class DivingLogSightingsEntryPagerFragment extends Fragment implements OnBackStackChangedListener {
-public class DivingLogSightingsEntryPagerFragment extends Fragment implements OnPageChangeListener {
+public class DivingLogSightingsEntryPagerFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
 
 	public static String				TAG	= "DivingLogSightingsEntryPagerFragment";
 
 	DivingLogSightingsEntryPagerAdapter	pagerAdapter;
-	ViewPager							mViewPager;
+	ViewPager mViewPager;
 	
 	
 	@Override
@@ -76,16 +75,16 @@ public class DivingLogSightingsEntryPagerFragment extends Fragment implements On
 			}
 		}
 
-		pagerAdapter = new DivingLogSightingsEntryPagerAdapter(getChildFragmentManager(),SingletonCursor.getCursor());
-		mViewPager = (ViewPager) fragment.findViewById(R.id.fragment_container_sightings_pager);
-		mViewPager.setOnPageChangeListener(this);
-		mViewPager.setAdapter(pagerAdapter);
-		mViewPager.setCurrentItem(position);
-		mViewPager.setId(R.id.fragment_container_sightings_pager);
+//		pagerAdapter = new DivingLogSightingsEntryPagerAdapter(getFragmentManager(),SingletonCursor.getCursor());
+//		mViewPager = (ViewPager) fragment.findViewById(R.id.fragment_container_sightings_pager);
+//		mViewPager.setOnPageChangeListener(this);
+//		mViewPager.setAdapter(pagerAdapter);
+//		mViewPager.setCurrentItem(position);
+//		mViewPager.setId(R.id.fragment_container_sightings_pager);
 
         ActionBar bar=null;
         if(MainActivity.me!=null){
-            bar = MainActivity.me.getSupportActionBar();
+            bar = MainActivity.me.getActionBar();
         }
 
         if(bar!=null) {
@@ -101,11 +100,11 @@ public class DivingLogSightingsEntryPagerFragment extends Fragment implements On
 	public void onBackStackChanged() {
         ActionBar bar=null;
         if(MainActivity.me!=null){
-            bar = MainActivity.me.getSupportActionBar();
+            bar = MainActivity.me.getActionBar();
         }
         if(bar!=null) {
             bar.setHomeButtonEnabled(true);
-            int backStackEntryCount = getActivity().getSupportFragmentManager().getBackStackEntryCount();
+            int backStackEntryCount = getActivity().getFragmentManager().getBackStackEntryCount();
             Log.d(TAG,
                     "backstackEntryCount[" + backStackEntryCount + "]");
             if (backStackEntryCount > 0) {
@@ -142,7 +141,7 @@ public class DivingLogSightingsEntryPagerFragment extends Fragment implements On
 
         ActionBar bar=null;
         if(MainActivity.me!=null){
-            bar = MainActivity.me.getSupportActionBar();
+            bar = MainActivity.me.getActionBar();
         }
 
         if(bar!=null) {
@@ -169,7 +168,7 @@ public class DivingLogSightingsEntryPagerFragment extends Fragment implements On
 	}
 
     public interface OnDivingLogSightingsItemSelectedListener {
-		public void activateDivingLogSightingsEntryFragment(DivingLogSightingsEntryPagerFragment entry, int position,
+		public void activateDivingLogSightingsEntryFragment(DivingLogSightingsEntryFragment entry, int position,
 				long id, String constraint);
 	}
 

@@ -1,44 +1,16 @@
 package nl.imarinelife.lib;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
-import nl.imarinelife.lib.MainDrawer.SelectedNavigation;
-import nl.imarinelife.lib.catalog.Catalog;
-import nl.imarinelife.lib.divinglog.DivingLogIdentityEntryFragment;
-import nl.imarinelife.lib.divinglog.DivingLogIdentityEntryFragment.OnDivingLogItemSelectedListener;
-import nl.imarinelife.lib.divinglog.DivingLogListFragment;
-import nl.imarinelife.lib.divinglog.DivingLogStayEntryFragment;
-import nl.imarinelife.lib.divinglog.db.dive.Dive;
-import nl.imarinelife.lib.divinglog.db.dive.DiveDbHelper;
-import nl.imarinelife.lib.divinglog.db.dive.DiveProfilePartDbHelper;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment.OnDivingLogSightingsItemSelectedListener;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsListFragment;
-import nl.imarinelife.lib.divinglog.sightings.Sighting;
-import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment;
-import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment.OnFieldGuideItemSelectedListener;
-import nl.imarinelife.lib.fieldguide.FieldGuideEntryPagerActivity;
-import nl.imarinelife.lib.fieldguide.FieldGuideListFragment;
-import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
-import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
-import nl.imarinelife.lib.utility.DataTextView;
-import nl.imarinelife.lib.utility.ExpansionFileAccessHelper;
-import nl.imarinelife.lib.utility.SerializableSparseArray;
-import nl.imarinelife.lib.utility.events.LanguageChangeEvent;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ActionProvider;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -54,9 +26,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import nl.imarinelife.lib.MainDrawer.SelectedNavigation;
+import nl.imarinelife.lib.catalog.Catalog;
+import nl.imarinelife.lib.divinglog.DivingLogIdentityEntryFragment;
+import nl.imarinelife.lib.divinglog.DivingLogIdentityEntryFragment.OnDivingLogItemSelectedListener;
+import nl.imarinelife.lib.divinglog.DivingLogListFragment;
+import nl.imarinelife.lib.divinglog.DivingLogStayEntryFragment;
+import nl.imarinelife.lib.divinglog.db.dive.Dive;
+import nl.imarinelife.lib.divinglog.db.dive.DiveDbHelper;
+import nl.imarinelife.lib.divinglog.db.dive.DiveProfilePartDbHelper;
+import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryFragment;
+import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment.OnDivingLogSightingsItemSelectedListener;
+import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsListFragment;
+import nl.imarinelife.lib.divinglog.sightings.Sighting;
+import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment;
+import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment.OnFieldGuideItemSelectedListener;
+import nl.imarinelife.lib.fieldguide.FieldGuideListFragment;
+import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
+import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
+import nl.imarinelife.lib.utility.DataTextView;
+import nl.imarinelife.lib.utility.ExpansionFileAccessHelper;
+
+public class MainActivity extends Activity implements
 		OnFieldGuideItemSelectedListener, OnDivingLogItemSelectedListener,
-		OnDivingLogSightingsItemSelectedListener, OnBackStackChangedListener {
+		OnDivingLogSightingsItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 	private static final String TAG = "MainActivity";
 
 	public static final String FRAME1 = "contentframe_1";
@@ -115,9 +112,9 @@ public class MainActivity extends ActionBarActivity implements
 				LibApp.getInstance().setCatalog(currentCatalog);
 			}
 			drawer = new MainDrawer(this);
-			currentFragments.put(FRAME1, getSupportFragmentManager()
+			currentFragments.put(FRAME1, getFragmentManager()
 					.findFragmentByTag(FRAME1));
-			currentFragments.put(FRAME2, getSupportFragmentManager()
+			currentFragments.put(FRAME2, getFragmentManager()
 					.findFragmentByTag(FRAME2));
 			checkBackStackEntryCount();
 
@@ -128,11 +125,10 @@ public class MainActivity extends ActionBarActivity implements
 			activate((drawer != null ? drawer.getSelected() : null));
 		}
 
-		getSupportFragmentManager().addOnBackStackChangedListener(this);
+		getFragmentManager().addOnBackStackChangedListener(this);
 
-		getSupportActionBar().setHomeButtonEnabled(true);
+		getActionBar().setHomeButtonEnabled(true);
 
-		(new LanguageChangeEvent()).decideLanguageChange(me);
 	}
 
 	@Override
@@ -189,13 +185,13 @@ public class MainActivity extends ActionBarActivity implements
 
 		switch (getNumberOfPanes()) {
 		case 1:
-			FragmentTransaction transaction = getSupportFragmentManager()
+			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
 			transaction = addOrReplaceFragment(R.id.content_frame_1,
 					transaction, fragments.get("FieldGuideListFragment"),
 					FRAME1);
 			Log.d(TAG, "handleFieldGuide - backstackcount ["
-					+ getSupportFragmentManager().getBackStackEntryCount()
+					+ getFragmentManager().getBackStackEntryCount()
 					+ "]");
 			if (activelyReset) {
 				Log.d(TAG, "adding top to backstack");
@@ -230,7 +226,7 @@ public class MainActivity extends ActionBarActivity implements
 			FieldGuideEntryFragment entryFragment = new FieldGuideEntryFragment();
 			entryFragment.setArguments(getIntent().getExtras());
 
-			FragmentTransaction dualTransaction = getSupportFragmentManager()
+			FragmentTransaction dualTransaction = getFragmentManager()
 					.beginTransaction();
 			dualTransaction = addOrReplaceFragment(R.id.content_frame_1,
 					dualTransaction,
@@ -257,7 +253,7 @@ public class MainActivity extends ActionBarActivity implements
 		}
 		switch (getNumberOfPanes()) {
 		case 1:
-			FragmentTransaction transaction = getSupportFragmentManager()
+			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
 			transaction = addOrReplaceFragment(R.id.content_frame_1,
 					transaction, divelistFragment, FRAME1);
@@ -272,7 +268,7 @@ public class MainActivity extends ActionBarActivity implements
 		case 2:
 			DivingLogIdentityEntryFragment logentryFragment = new DivingLogIdentityEntryFragment();
 			logentryFragment.setArguments(getIntent().getExtras());
-			FragmentTransaction dualTransaction = getSupportFragmentManager()
+			FragmentTransaction dualTransaction = getFragmentManager()
 					.beginTransaction();
 			dualTransaction = addOrReplaceFragment(R.id.content_frame_1,
 					dualTransaction, divelistFragment, FRAME1);
@@ -294,7 +290,7 @@ public class MainActivity extends ActionBarActivity implements
 			String contentFrameName) {
 		Log.d(TAG, contentFrameName + " " + contentFrame + " "
 				+ fragment.getClass().getName());
-		Fragment alreadyThere = getSupportFragmentManager().findFragmentByTag(
+		Fragment alreadyThere = getFragmentManager().findFragmentByTag(
 				contentFrameName);
 		if (fragment != null) {
 			if (alreadyThere != null && alreadyThere.getView() != null) {
@@ -314,28 +310,34 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void activateFieldGuideEntryFragment(FieldGuideEntryFragment entry,
-			int position, long id, String constraint) {
+			int position, long fieldguideId, String constraint) {
 		Log.d(TAG, "activateFieldGuideEntryFragment position[" + position
-				+ "] id[" + id + "] constraint[" + constraint + "]");
-		Intent intent = new Intent();
-		intent.setClass(this, FieldGuideEntryPagerActivity.class);
-		intent.putExtra(FieldGuideEntry.ID, id);
-		intent.putExtra(FieldGuideListFragment.CHECKED_POSITION, position);
-		intent.putExtra(FieldGuideListFragment.CONSTRAINT, constraint);
-		if (getNumberOfPanes() == 1) {
-			startActivity(intent);
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction();
-			transaction.addToBackStack(null).commit();
-		} else {
-			entry.setArguments(intent.getExtras());
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction();
-			transaction = addOrReplaceFragment(R.id.content_frame_2,
-					transaction, entry, FRAME2);
-			transaction.commit();
+				+ "] id[" + fieldguideId + "] constraint[" + constraint + "]");
+		fragments.put(entry.getClass().getSimpleName(), entry);
+		int frameId = 0;
+		String frameName = null;
+		switch (getNumberOfPanes()) {
+			case 1:
+				frameId = R.id.content_frame_1;
+				frameName = FRAME1;
+				break;
+			case 2:
+				frameId = R.id.content_frame_2;
+				frameName = FRAME2;
+				break;
 		}
+		Bundle bundle = new Bundle();
+		bundle.putLong(FieldGuideEntry.ID, fieldguideId);
+		bundle.putString(FieldGuideListFragment.CONSTRAINT, constraint);
+		bundle.putInt(FieldGuideListFragment.CHECKED_POSITION, position);
 
+		entry.setArguments(bundle);
+		FragmentTransaction transaction = getFragmentManager()
+				.beginTransaction();
+		transaction = addOrReplaceFragment(frameId, transaction, entry,
+				frameName);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 	@Override
@@ -370,7 +372,7 @@ public class MainActivity extends ActionBarActivity implements
 			bundle.putSerializable(KEY_SER_DIVE, dive);
 			Log.d(TAG, "dive put in bundle: " + dive);
 			entry.setArguments(bundle);
-			FragmentTransaction transaction = getSupportFragmentManager()
+			FragmentTransaction transaction = getFragmentManager()
 					.beginTransaction();
 			transaction = addOrReplaceFragment(frameId, transaction, entry,
 					frameName);
@@ -414,7 +416,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void activateDivingLogSightingsEntryFragment(
-			DivingLogSightingsEntryPagerFragment entry, int position,
+			DivingLogSightingsEntryFragment entry, int position,
 			long fieldguideId, String constraint) {
 		Log.d(TAG, "activateDivingLogSightingsEntryFragment [" + fieldguideId
 				+ "][" + position + "][" + constraint + "]");
@@ -439,7 +441,7 @@ public class MainActivity extends ActionBarActivity implements
 		bundle.putInt(DivingLogSightingsListFragment.FIELDGUIDE_ID,
 				(int) fieldguideId);
 		entry.setArguments(bundle);
-		FragmentTransaction transaction = getSupportFragmentManager()
+		FragmentTransaction transaction = getFragmentManager()
 				.beginTransaction();
 		transaction = addOrReplaceFragment(frameId, transaction, entry,
 				frameName);
@@ -522,7 +524,7 @@ public class MainActivity extends ActionBarActivity implements
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Pass the event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
-		int backstackEntryCount = getSupportFragmentManager()
+		int backstackEntryCount = getFragmentManager()
 				.getBackStackEntryCount();
 		Log.d(TAG, "onOptionsItemSelected - start: backstackEntryCount ["
 				+ backstackEntryCount + "]");
@@ -547,7 +549,7 @@ public class MainActivity extends ActionBarActivity implements
 				} else if (backstackEntryCount > 0) {
 					if (drawer == null || !drawer.isOpen()) {
 						Log.d(TAG, "onOptionsItemSelected: poppingBackStack");
-						getSupportFragmentManager().popBackStackImmediate();
+						getFragmentManager().popBackStackImmediate();
 					}
 					if (backstackEntryCount == 1 && drawer != null
 							&& drawer.getActionBarDrawerToggle() != null) {
@@ -561,7 +563,7 @@ public class MainActivity extends ActionBarActivity implements
 			} else {
 				toReturn = false;
 			}
-			backstackEntryCount = getSupportFragmentManager()
+			backstackEntryCount = getFragmentManager()
 					.getBackStackEntryCount();
 			Log.d(TAG, "onOptionsItemSelected - end: backstackEntryCount ["
 					+ backstackEntryCount + "]");
@@ -576,7 +578,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	/*
 	 * @Override public void onBackPressed() { int backstackEntryCount =
-	 * getSupportFragmentManager().getBackStackEntryCount(); Log.d(TAG,
+	 * getFragmentManager().getBackStackEntryCount(); Log.d(TAG,
 	 * "onBackPressed: backstackEntryCount [" + backstackEntryCount + "]"); if
 	 * (backstackEntryCount == 1) drawer.openDrawer(); if (backstackEntryCount
 	 * == 0) System.exit(0); super.onBackPressed(); }
@@ -584,16 +586,17 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		int backstackEntryCount = getSupportFragmentManager()
+		int backstackEntryCount = getFragmentManager()
 				.getBackStackEntryCount();
 		int repeatCount = event.getRepeatCount();
 		Log.d(TAG, "onKeyDown repeatCount[" + repeatCount
 				+ "] backstackEntryCount[" + backstackEntryCount + "]");
+		getFragmentManager().executePendingTransactions();
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (backstackEntryCount == 1
 					&& (drawer == null || !drawer.isOpen())) {
 				Log.d(TAG, "onKeyDown opening Drawer");
-				getSupportFragmentManager().popBackStackImmediate();
+				getFragmentManager().popBackStackImmediate();
 				if (drawer == null)
 					drawer = new MainDrawer(this);
 				drawer.openDrawer();
@@ -604,7 +607,7 @@ public class MainActivity extends ActionBarActivity implements
 				System.exit(0);
 				return true;
 			} else {
-				getSupportFragmentManager().popBackStackImmediate();
+				getFragmentManager().popBackStackImmediate();
 				return true;
 			}
 
@@ -831,17 +834,17 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	public void checkBackStackEntryCount() {
-		int backStackEntryCount = getSupportFragmentManager()
+		int backStackEntryCount = getFragmentManager()
 				.getBackStackEntryCount();
 		Log.d(TAG,
 				"onBackStackChanged/checkBackStackEntryCount - backstackEntryCount["
 						+ backStackEntryCount + "]");
 		if (backStackEntryCount > 0) {
-			getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-			getSupportActionBar().setHomeButtonEnabled(true);
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+			getActionBar().setHomeButtonEnabled(true);
 		} else {
-			getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-			getSupportActionBar().setHomeButtonEnabled(false);
+			getActionBar().setDisplayHomeAsUpEnabled(false);
+			getActionBar().setHomeButtonEnabled(false);
 		}
 	}
 

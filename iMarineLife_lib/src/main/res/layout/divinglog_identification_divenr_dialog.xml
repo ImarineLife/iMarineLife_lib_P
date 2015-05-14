@@ -9,15 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dark"
-        android:gravity="right"
+        android:gravity="end"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/dl_id_divenrdialog_cancel_button_id"
+            android:id="@+id/dl_id_divenrdialog_choose_button_id"
             style="@style/iMarineLifeSlenderButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" 
-            android:text="@string/dl_id_dialog_cancel_buttontext" />
+            android:layout_height="wrap_content"
+            android:text="@string/dl_id_dialog_choose_buttontext" />
 
         <TextView
             android:layout_width="0dp"
@@ -26,11 +26,12 @@
             android:visibility="invisible" />
 
         <Button
-            android:id="@+id/dl_id_divenrdialog_choose_button_id"
+            android:id="@+id/dl_id_divenrdialog_cancel_button_id"
             style="@style/iMarineLifeSlenderButtonStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dl_id_dialog_choose_buttontext" />
+            android:layout_height="wrap_content" 
+            android:text="@string/dl_id_dialog_cancel_buttontext" />
+
     </LinearLayout>
 
     <LinearLayout

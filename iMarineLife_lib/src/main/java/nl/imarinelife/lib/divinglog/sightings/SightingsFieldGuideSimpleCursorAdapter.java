@@ -18,12 +18,13 @@ import nl.imarinelife.lib.utility.DataTextView;
 import nl.imarinelife.lib.utility.FilterCursorWrapper;
 import nl.imarinelife.lib.utility.SerializableSparseArray;
 import nl.imarinelife.lib.utility.SingletonCursor;
+import nl.imarinelife.lib.utility.Utils;
+
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +46,7 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 	private final int uncheckedColor;
 	private final int checkedColor;
 	private Dive dive = null;
+	private DivingLogSightingsListFragment fragment;
 
 	private static SerializableSparseArray<Sighting.SightingData> changedSightings1 = new SerializableSparseArray<Sighting.SightingData>();
 	private static SerializableSparseArray<Sighting.SightingData> changedSightings2 = new SerializableSparseArray<Sighting.SightingData>();
@@ -71,10 +74,11 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 	}
 
 	public SightingsFieldGuideSimpleCursorAdapter(Context context, int layout,
-			Cursor c, String[] from, int[] to, int flag, Dive dive) {
+			Cursor c, String[] from, int[] to, int flag, Dive dive, DivingLogSightingsListFragment fragment) {
 		super(context, layout, c, from, to, flag);
 		checkedColor = LibApp.getCurrentResources().getColor(R.color.orange);
 		uncheckedColor = LibApp.getCurrentResources().getColor(R.color.dark);
+		this.fragment = fragment;
 		this.dive = dive;
 	}
 
@@ -102,7 +106,7 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 		}
 
 		if (holder == null || holder.common_name == null) {
-			holder = initializeHolder(row);
+			holder = initializeHolder(context,row);
 		}
 
 		String entryCatalog = cursor
@@ -111,6 +115,7 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 
 		holder.fieldguideId = cursor
 				.getInt(FieldGuideAndSightingsEntryDbHelper.KEY_FIELDGUIDE_ID_CURSORLOC);
+		holder.listViewPosition = cursor.getPosition();
 
 		Bitmap smallPic = null;
 		if (!Preferences.listHasValue(Preferences.SIGHTINGS_GROUPS_HIDDEN,
@@ -172,21 +177,33 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		Log.d(TAG, "newView, cursor["
 				+ (cursor != null ? cursor.getPosition() : "null") + "]");
-		LayoutInflater inflater = ((Activity) super.mContext)
+		LayoutInflater inflater = ((Activity) context)
 				.getLayoutInflater();
 		View row = inflater.inflate(R.layout.listview_sightings_fieldguide_row,
 				parent, false);
 		// a holder is created for every visible listview row.
 		// listview rows, and therefore holders are reused.
-		SightingHolder holder = initializeHolder(row);
+		SightingHolder holder = initializeHolder(context, row);
 		row.setTag(holder);
 		return row;
 	}
 
-	private SightingHolder initializeHolder(final View row) {
+	private SightingHolder initializeHolder(Context context, final View row) {
 		Log.d(TAG, "initializeHolder");
 		final SightingHolder holder = new SightingHolder(false);
 		holder.spic = (ImageView) row.findViewById(R.id.sighting_image_list);
+		holder.spic.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View view) {
+				Log.d(TAG, "OnClick [" + holder.listViewPosition + "] hiding keyboard");
+				Utils.hideKeyboard(fragment);
+				fragment.checkedPosition = holder.listViewPosition;
+				fragment.topPosition = fragment.getListView().getFirstVisiblePosition();
+				fragment.setSelection(holder.listViewPosition);
+				int fieldguideId = holder.listViewPosition;
+				fragment.showDetails(fieldguideId);
+			}
+		});
 		holder.group_name = (DataTextView) row
 				.findViewById(R.id.header_sightings_all_list_groupname);
 		holder.defaultChoice1 = (TextView) row
@@ -213,12 +230,12 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 				.findViewById(R.id.sighting_values_layout);
 
 		holder.buttons = new HashMap<String, RadioButton>();
-		RadioGroup group = new RadioGroup(super.mContext);
+		RadioGroup group = new RadioGroup(context);
 		group.setOrientation(RadioGroup.HORIZONTAL);
 		ArrayList<String> sightingChoices = LibApp
 				.getCurrentCatalogSightingChoices(); // is values as they will
 														// be stored
-		LayoutInflater inflater = ((Activity) super.mContext)
+		LayoutInflater inflater = ((Activity) context)
 				.getLayoutInflater();
 		Catalog catalog = LibApp.getInstance().getCurrentCatalog();
 		if (sightingChoices != null) {
@@ -366,16 +383,16 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 						Sighting sighting = (Sighting) params[0];
 						Boolean worthSaving = (Boolean) params[1];
 						if (worthSaving) {
-							((MainActivity)mContext).saveDive(sighting);
+							MainActivity.me.saveDive(sighting);
 						} else {
-							((MainActivity)mContext).deleteSighting(sighting);
+							MainActivity.me.deleteSighting(sighting);
 						}
 						synchronized (SingletonCursor.getCursor()) {
 							changesToGo--;
 							if (changesToGo == 0) {
 								dubbel = true;
 								FieldGuideAndSightingsEntryDbHelper dbHelper = FieldGuideAndSightingsEntryDbHelper
-										.getInstance(mContext);
+										.getInstance(MainActivity.me);
 								Cursor newCursor = dbHelper
 										.queryFieldGuideFilledForDive(sighting.diveNr);
 								changesToGo = CHANGES_BEFORE_REQUERY;
@@ -432,6 +449,7 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 		public HashMap<String, CheckBox> allCheckBoxes;
 
 		public Sighting sighting;
+		public int listViewPosition;
 		public int fieldguideId;
 		public int orderId;
 		public Bitmap spicBitMap;
@@ -509,6 +527,7 @@ public class SightingsFieldGuideSimpleCursorAdapter extends SimpleCursorAdapter 
 			holder.allCheckBoxes = allCheckBoxes;
 			holder.sighting = sighting;
 			holder.fieldguideId = fieldguideId;
+			holder.listViewPosition = listViewPosition;
 			holder.orderId = orderId;
 			holder.remarks = remarks;
 			holder.checkValues = checkValues;

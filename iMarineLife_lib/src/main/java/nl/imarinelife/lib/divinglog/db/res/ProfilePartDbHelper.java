@@ -4,9 +4,6 @@ import java.util.HashMap;
 
 import nl.imarinelife.lib.DbHelper;
 import nl.imarinelife.lib.LibApp;
-import nl.imarinelife.lib.Preferences;
-import nl.imarinelife.lib.catalog.Catalog;
-import nl.imarinelife.lib.divinglog.db.dive.DiveDbHelper;
 import nl.imarinelife.lib.utility.SerializableSparseArray;
 import android.content.ContentValues;
 import android.content.Context;

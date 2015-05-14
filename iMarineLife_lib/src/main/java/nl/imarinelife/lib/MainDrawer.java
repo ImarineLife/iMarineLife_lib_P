@@ -57,7 +57,7 @@ public class MainDrawer {
 																				"FieldGuide button clicked");
 																			selectedNavigation = SelectedNavigation.FIELDGUIDE;
 																			mDrawerLayout.closeDrawer(drawer);
-																			mainActivity.getSupportFragmentManager().popBackStackImmediate(null,
+																			mainActivity.getFragmentManager().popBackStackImmediate(null,
 																				FragmentManager.POP_BACK_STACK_INCLUSIVE);
 																			mainActivity.activelyReset = true;
 																			mainActivity.activate(selectedNavigation);
@@ -70,7 +70,7 @@ public class MainDrawer {
 																				"DivingLog button clicked");
 																			selectedNavigation = SelectedNavigation.DIVINGLOG;
 																			mDrawerLayout.closeDrawer(drawer);
-																			mainActivity.getSupportFragmentManager().popBackStackImmediate(null,
+																			mainActivity.getFragmentManager().popBackStackImmediate(null,
 																				FragmentManager.POP_BACK_STACK_INCLUSIVE);
 																			mainActivity.activelyReset = true;
 																			mainActivity.activate(selectedNavigation);
@@ -176,8 +176,8 @@ public class MainDrawer {
 
 			/** Called when a drawer has settled in a completely closed state. */
 			public void onDrawerClosed(View view) {
-				mainActivity.getSupportActionBar().setTitle(mainActivity.getTitle());
-				mainActivity.supportInvalidateOptionsMenu(); // creates call to
+				mainActivity.getActionBar().setTitle(mainActivity.getTitle());
+				mainActivity.invalidateOptionsMenu(); // creates call to
 				// onPrepareOptionsMenu()
 				openedBySwipe = true; // is default for next action
 			}
@@ -185,10 +185,10 @@ public class MainDrawer {
 			/** Called when a drawer has settled in a completely open state. */
 			public void onDrawerOpened(View drawerView) {
 				if(mainActivity!=null){
-					if(mainActivity.getSupportActionBar()!=null && LibApp.getInstance()!=null && LibApp.getInstance().getCurrentCatalog()!=null){
-						mainActivity.getSupportActionBar().setTitle(LibApp.getInstance().getCurrentCatalog().getAppName()+" "+LibApp.getCurrentCatalogVersionName());
+					if(mainActivity.getActionBar()!=null && LibApp.getInstance()!=null && LibApp.getInstance().getCurrentCatalog()!=null){
+						mainActivity.getActionBar().setTitle(LibApp.getInstance().getCurrentCatalog().getAppName()+" "+LibApp.getCurrentCatalogVersionName());
 					}
-					mainActivity.supportInvalidateOptionsMenu(); // creates call to
+					mainActivity.invalidateOptionsMenu(); // creates call to
 				}
 				// onPrepareOptionsMenu()
 

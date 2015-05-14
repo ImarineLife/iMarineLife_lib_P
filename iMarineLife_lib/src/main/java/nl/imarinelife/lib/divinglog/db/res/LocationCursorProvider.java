@@ -1,11 +1,16 @@
 package nl.imarinelife.lib.divinglog.db.res;
 
 import nl.imarinelife.lib.LibApp;
+import nl.imarinelife.lib.MainActivity;
 import nl.imarinelife.lib.catalog.Catalog;
 import nl.imarinelife.lib.divinglog.db.dive.DiveDbHelper;
 import nl.imarinelife.lib.utility.CursorProvider;
 import android.content.Context;
 import android.database.Cursor;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class LocationCursorProvider implements CursorProvider {
 
@@ -31,11 +36,11 @@ public class LocationCursorProvider implements CursorProvider {
 		if (cursor != null && cursor.getCount() > index) {
 			cursor.moveToPosition(index);
 			StringBuilder buffer = new StringBuilder();
-			if (cursor.getString(LocationDbHelper.KEY_CATCODE_CURSORLOC) != null
+			/*if (cursor.getString(LocationDbHelper.KEY_CATCODE_CURSORLOC) != null
 					&& cursor.getString(LocationDbHelper.KEY_CATCODE_CURSORLOC).trim().length() > 0) {
 				buffer.append(cursor.getString(LocationDbHelper.KEY_CATCODE_CURSORLOC));
 				buffer.append(" ");
-			}
+			}*/
 			String locationId = cursor.getString(LocationDbHelper.KEY_LOCATIONID_CURSORLOC);
 			String showLocation = cursor.getString(LocationDbHelper.KEY_SHOWLOCATIONNAME_CURSORLOC);
 			Catalog catalog = LibApp.getInstance().getCurrentCatalog();
@@ -98,7 +103,7 @@ public class LocationCursorProvider implements CursorProvider {
 	@Override
 	public void insert(Context ctx, Object... values) {
 		LocationDbHelper helper = LocationDbHelper.getInstance(ctx);
-		helper.insertPersonalLocation((String) values[0],(String) values[0]);
+		helper.insertPersonalLocation((String) values[0], (String) values[0]);
 	}
 
 	@Override
@@ -154,5 +159,17 @@ public class LocationCursorProvider implements CursorProvider {
 	public void closeCursor() {
 		if (cursor != null)
 			cursor.close();
+	}
+
+
+	private void writeObject(ObjectOutputStream o)
+			throws IOException {
+		// no writing needed
+	}
+
+	private void readObject(ObjectInputStream o)
+			throws IOException, ClassNotFoundException {
+
+		refresh(MainActivity.me);
 	}
 }

@@ -12,16 +12,15 @@ import nl.imarinelife.lib.utility.FilterCursorWrapper;
 import nl.imarinelife.lib.utility.Utils;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SearchViewCompat;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,10 +31,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 
 
 public class FieldGuideListFragment extends ListFragment implements
-        android.support.v7.widget.SearchView.OnQueryTextListener, android.support.v7.widget.SearchView.OnCloseListener,
+		SearchView.OnQueryTextListener, SearchView.OnCloseListener,
 		LoaderManager.LoaderCallbacks<Cursor> {
     public static String TAG = "FieldGuideListFragment";
 	private static final String KEY_DISPLAY_OPT = "displayOptions";
@@ -152,7 +152,7 @@ public class FieldGuideListFragment extends ListFragment implements
             // restore actionbar displayoptions (like up icon)
             int savedDisplayOpt = savedInstanceState.getInt(KEY_DISPLAY_OPT);
             if (savedDisplayOpt != 0) {
-                ActionBar abar = getActivity().getActionBar();
+                ActionBar abar = MainActivity.me.getActionBar();
                 if (abar != null) {
                     abar.setDisplayOptions(savedDisplayOpt);
                 }
@@ -180,11 +180,13 @@ public class FieldGuideListFragment extends ListFragment implements
         Log.d(TAG, "onPrepareOptionsMenu");
         menu.clear();
         getActivity().getMenuInflater().inflate(
-                R.menu.field_guide_list, menu);
-        MenuItem searchItem = menu.findItem(R.id.fieldguide_search);
-        searchView = (android.support.v7.widget.SearchView) MenuItemCompat.getActionView(searchItem);
+				R.menu.field_guide_list, menu);
+
+		MenuItem item = menu.findItem(R.id.fieldguide_search);
+		searchView = new SearchView(getActivity());
+		item.setActionView(searchView);
         if(searchView!=null) {
-            searchView.setSubmitButtonEnabled(true);
+			searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
         }
 
@@ -210,15 +212,15 @@ public class FieldGuideListFragment extends ListFragment implements
             Preferences.setString(Preferences.FIELDGUIDE_GROUPS_HIDDEN, "");
             Preferences
                     .setBoolean(Preferences.FIELDGUIDE_COLLAPSED_LAST, false);
-            getActivity().supportInvalidateOptionsMenu();
+			getActivity().invalidateOptionsMenu();
             refresh();
             return true;
 
         } else if (item.getItemId() == R.id.fieldguide_collapse) {
             Preferences.setString(Preferences.FIELDGUIDE_GROUPS_HIDDEN,
-                    LibApp.getCurrentCatalogGroups());
+					LibApp.getCurrentCatalogGroups());
             Preferences.setBoolean(Preferences.FIELDGUIDE_COLLAPSED_LAST, true);
-            getActivity().supportInvalidateOptionsMenu();
+			getActivity().invalidateOptionsMenu();
             refresh();
             return true;
         }
@@ -232,7 +234,7 @@ public class FieldGuideListFragment extends ListFragment implements
         super.onSaveInstanceState(outState);
         outState.putLong(FieldGuideEntry.ID, mCurId);
         outState.putInt(KEY_DISPLAY_OPT, MainActivity.me
-                .getSupportActionBar().getDisplayOptions());
+                .getActionBar().getDisplayOptions());
         outState.putInt(CHECKED_POSITION, checkedPosition);
         Log.d(TAG, "storing top position["+topPosition+"]");
         outState.putInt(TOP_POSITION, topPosition);

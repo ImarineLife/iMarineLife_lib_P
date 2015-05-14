@@ -19,19 +19,15 @@ import nl.imarinelife.lib.utility.Utils;
 import nl.imarinelife.lib.utility.dialogs.AreYouSureDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.AreYouSureDialogFragment.OnYesListener;
 import nl.imarinelife.lib.utility.mail.MailSightingsSender;
-import android.annotation.SuppressLint;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,7 +40,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.support.v7.widget.SearchView;
+import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 
@@ -67,16 +64,16 @@ public class DivingLogSightingsListFragment extends ListFragment
 	private boolean mDualPane;
 	private long diveId = 0L;
 	private long fieldguideId = 0L;
-	private static Integer checkedPosition = null;
+	public static Integer checkedPosition = null;
 	private boolean editMode = false;
 	public static Integer topPosition = null;
 
-	private android.support.v7.widget.SearchView searchView;
+	private SearchView searchView;
 	private String constraint;
 	private ProgressBar progressbar;
 	private View header;
 
-	private DivingLogSightingsEntryPagerFragment details = null;
+	private DivingLogSightingsEntryFragment details = null;
 
 	private enum ActionBarMode {
 		EDIT, SAVE
@@ -119,7 +116,6 @@ public class DivingLogSightingsListFragment extends ListFragment
 		}
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -139,7 +135,6 @@ public class DivingLogSightingsListFragment extends ListFragment
 		return layout;
 	}
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		Log.d(TAG, "onActivityCreated ");
@@ -188,7 +183,7 @@ public class DivingLogSightingsListFragment extends ListFragment
 			setCursor(cursor);
 			adapter = getAdapterFieldGuideForDive(SingletonCursor.getCursor());
 			actionbarMode = ActionBarMode.SAVE;
-			getActivity().supportInvalidateOptionsMenu();
+			getActivity().invalidateOptionsMenu();
 			listener = this;
 		} else {
 			adapter = getAdapterAsIsForDive(SingletonCursor.getCursor());
@@ -269,7 +264,7 @@ public class DivingLogSightingsListFragment extends ListFragment
 		adapter = new SightingsFieldGuideSimpleCursorAdapter(
 				this.getActivity(),
 				R.layout.listview_sightings_fieldguide_row, cursor, columns,
-				to, 0, MainActivity.me.currentDive);
+				to, 0, MainActivity.me.currentDive, this);
 
 		return adapter;
 	}
@@ -303,8 +298,9 @@ public class DivingLogSightingsListFragment extends ListFragment
 		}
 
 		MenuItem searchItem = menu.findItem(R.id.sightings_search);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        if(searchView!=null) {
+		searchView = new SearchView(getActivity());
+		searchItem.setActionView(searchView);
+		if(searchView!=null) {
             searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
         }
@@ -331,7 +327,7 @@ public class DivingLogSightingsListFragment extends ListFragment
 				setListAdapter(adapter);
 				getListView().setOnItemClickListener(this);
 				actionbarMode = ActionBarMode.SAVE;
-				getActivity().supportInvalidateOptionsMenu();
+				getActivity().invalidateOptionsMenu();
 				editMode = true;
 				return true;
 			}
@@ -399,14 +395,14 @@ public class DivingLogSightingsListFragment extends ListFragment
 				Log.d(TAG, "sightings send");
 				AreYouSureDialogFragment fragment = getAreYouSureToSendFragment();
 				FragmentTransaction ft = (getActivity())
-						.getSupportFragmentManager().beginTransaction();
+						.getFragmentManager().beginTransaction();
 				ft.addToBackStack(null);
 				fragment.show(ft, "adddialog");
 			}
 		} else if (item.getItemId() == R.id.sightings_expand) {
 			Preferences.setString(Preferences.SIGHTINGS_GROUPS_HIDDEN, "");
 			Preferences.setBoolean(Preferences.SIGHTINGS_COLLAPSED_LAST, false);
-			getActivity().supportInvalidateOptionsMenu();
+			getActivity().invalidateOptionsMenu();
 			refresh();
 			return true;
 
@@ -429,7 +425,7 @@ public class DivingLogSightingsListFragment extends ListFragment
 				}
 			}
 			Preferences.setBoolean(Preferences.SIGHTINGS_COLLAPSED_LAST, true);
-			getActivity().supportInvalidateOptionsMenu();
+			getActivity().invalidateOptionsMenu();
 			refresh();
 			return true;
 		}
@@ -474,7 +470,7 @@ public class DivingLogSightingsListFragment extends ListFragment
 		Log.d(TAG, "onSaveInstanceState");
 		outState.putLong(KEY_FIELDGUIDEID, fieldguideId);
 		outState.putInt(KEY_DISPLAY_OPT,MainActivity.me
-                .getSupportActionBar().getDisplayOptions());
+                .getActionBar().getDisplayOptions());
 		outState.putInt(CHECKED_POSITION, checkedPosition);
 		Log.d(TAG, "storing top position[" + topPosition + "]");
 		outState.putInt(TOP_POSITION, topPosition);
@@ -516,11 +512,10 @@ public class DivingLogSightingsListFragment extends ListFragment
 	}
 
 	/**
-	 * Helper function to show the details of a selected item, either by
-	 * displaying a fragment in-place in the current UI, or starting a whole new
-	 * activity in which it is displayed.
+	 * Helper function to show the details of a selected item, by
+	 * displaying a fragment in-place in the current UI
 	 */
-	void showDetails(long fieldguideId) {
+	public void showDetails(long fieldguideId) {
 		// We can display everything in-place with fragments, so update
 		// the list to highlight the selected item and show the data.
 		if (fieldguideId != 0L) {
@@ -529,7 +524,7 @@ public class DivingLogSightingsListFragment extends ListFragment
 			getListView().setItemChecked(checkedPosition, true);
 		}
 
-		details = new DivingLogSightingsEntryPagerFragment();
+		details = new DivingLogSightingsEntryFragment();
 
 		((OnDivingLogSightingsItemSelectedListener) getActivity())
 				.activateDivingLogSightingsEntryFragment(details,

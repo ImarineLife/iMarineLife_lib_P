@@ -2,27 +2,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/fieldguide_search"
-        android:actionLayout="@layout/search_field_guide"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        android:icon="@android:drawable/ic_menu_search"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/search_hint"/>
-    <item
         android:id="@+id/fieldguide_collapse"
         android:icon="@drawable/navigation_collapse"
-        app:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:title="@string/collapse"/> 
     <item
         android:id="@+id/fieldguide_expand"
         android:icon="@drawable/navigation_expand"
-        app:showAsAction="ifRoom"
+        android:showAsAction="ifRoom"
         android:title="@string/expand"/>
+    <item
+        android:id="@+id/fieldguide_search"
+        android:actionLayout="@layout/search_field_guide"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/search_hint"/>
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom|collapseActionView"
+        android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/action_settings"/>
 
 

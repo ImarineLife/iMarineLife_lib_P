@@ -13,10 +13,10 @@ import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.utility.dialogs.ThreeChoiceDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.ThreeChoiceDialogFragment.OnOneListener;
 import nl.imarinelife.lib.utility.dialogs.ThreeChoiceDialogFragment.OnTwoListener;
-import android.content.res.Configuration;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
+
+import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.util.Log;
 
 public class LanguageChangeEvent {
@@ -32,7 +32,7 @@ public class LanguageChangeEvent {
 	public static boolean dismissDialogFragment() {
 		finishedBackendProcesses++;
 		if (fragment != null && finishedBackendProcesses == 2) {
-			fragment.dismiss();
+			//fragment.dismiss();
 			fragment = null;
 			finishedBackendProcesses = 0;
 			return true;
@@ -41,7 +41,7 @@ public class LanguageChangeEvent {
 		}
 	}
 
-	public void decideLanguageChange(FragmentActivity activity) {
+	public void decideLanguageChange(Activity activity) {
 		Catalog currentCatalog = LibApp.getInstance().getCurrentCatalog();
 		// the language decided on earlier
 		String currentLanguage = Preferences.getString(
@@ -62,10 +62,10 @@ public class LanguageChangeEvent {
 				// has occurred
 				fragment = getYesNoLaterLanguageChangedFragment(activity,
 						currentCatalog);
-				FragmentTransaction ft = (activity).getSupportFragmentManager()
+				FragmentTransaction ft = (activity).getFragmentManager()
 						.beginTransaction();
 				ft.addToBackStack(null);
-				fragment.show(ft, "adddialog");
+				//fragment.show(ft, "adddialog");
 
 			} else {
 				Log.d(TAG,
@@ -79,7 +79,7 @@ public class LanguageChangeEvent {
 	}
 
 	private ThreeChoiceDialogFragment getYesNoLaterLanguageChangedFragment(
-			final FragmentActivity activity, final Catalog currentCatalog) {
+			final Activity activity, final Catalog currentCatalog) {
 		final int layoutId;
 		final int textViewId;
 		final int yesbuttonId;

@@ -13,7 +13,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 14
         targetSdkVersion 22
     }
     signingConfigs {
@@ -42,6 +42,5 @@ dependencies {
     compile project(':play_licensing')
     compile project(':zip_file')
     compile project(':downloader_library')
-    compile 'com.android.support:support-v4:22.0.0'
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    //compile 'com.android.support:support-v4:22.0.0'
 }

@@ -2,9 +2,9 @@ package nl.imarinelife.lib.utility.dialogs;
 
 import java.io.Serializable;
 
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +22,7 @@ public class AddValueDialogFragment extends DialogFragment {
 	public static final String	KEY_INT_CANCEL			= "cancelbuttonId";
 	public static final String	KEY_INT_STYLE			= "style";
 	public static final String	KEY_INT_THEME			= "theme";
+	public static final String	KEY_OBJ_LISTENER		= "listener";
 
 	EditText					editText				= null;
 	Button						ok						= null;
@@ -87,6 +88,9 @@ public class AddValueDialogFragment extends DialogFragment {
 		cancelbuttonId = bundle.getInt(KEY_INT_CANCEL);
 		style = bundle.getInt(KEY_INT_STYLE);
 		theme = bundle.getInt(KEY_INT_THEME);
+		if(bundle.getSerializable(KEY_OBJ_LISTENER)!=null) {
+			listener = (OnOkListener) bundle.getSerializable(KEY_OBJ_LISTENER);
+		}
 
 		setStyle(style,
 			theme);
@@ -108,6 +112,10 @@ public class AddValueDialogFragment extends DialogFragment {
 			style);
 		args.putInt(KEY_INT_THEME,
 			theme);
+		if(listener!=null) {
+			args.putSerializable(KEY_OBJ_LISTENER,listener);
+		}
+
 		super.onSaveInstanceState(args);
 
 	}

@@ -10,10 +10,10 @@ import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class DiveSimpleCursorAdapter extends SimpleCursorAdapter {

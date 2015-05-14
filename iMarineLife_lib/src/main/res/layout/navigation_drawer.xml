@@ -73,6 +73,7 @@
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:text="@string/fieldguide" />
 
                     <!-- TextView is just here to separate the buttons -->
@@ -94,6 +95,7 @@
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
                         android:gravity="center"
+                        android:singleLine="true"
                         android:text="@string/divinglog" />
                 </LinearLayout>
             </TableRow>

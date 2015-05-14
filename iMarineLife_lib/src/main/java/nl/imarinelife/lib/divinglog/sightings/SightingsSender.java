@@ -70,7 +70,7 @@ public abstract class SightingsSender {
 			
 			@Override
 			protected void onPostExecute(ReturnValue result) {
-				beingSentNow.remove(new Integer(result.diveNr));
+				beingSentNow.remove(Integer.valueOf(result.diveNr));
 				
 				String text=null;
 				if(result.done){

@@ -1,27 +1,31 @@
 package nl.imarinelife.lib.fieldguide;
 
-import nl.imarinelife.lib.LibApp;
-import nl.imarinelife.lib.MainActivity;
-import nl.imarinelife.lib.R;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment;
-import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
-import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
+import android.app.ActionBar;
+import android.app.Fragment;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
+
+import nl.imarinelife.lib.LibApp;
+import nl.imarinelife.lib.MainActivity;
+import nl.imarinelife.lib.R;
+import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
+import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
+import nl.imarinelife.lib.utility.DivingLogGestureListener;
 
 public class FieldGuideEntryFragment extends Fragment {
 
@@ -34,6 +38,11 @@ public class FieldGuideEntryFragment extends Fragment {
 	private ImageView		imageView		= null;
 
 	private long			shownId			= 0L;
+	FieldGuideEntry 		fldgEntry 		= null;
+	FieldGuideEntryPagerAdapter	pagerAdapter;
+
+	private GestureDetector gesturedetector = null;
+	Cursor cursor=null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,29 +50,57 @@ public class FieldGuideEntryFragment extends Fragment {
 		super.onCreate(savedInstanceState);
 	}
 
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if (savedInstanceState != null) {
-			// Restore last state for checked position.
-			shownId = savedInstanceState.getLong(FieldGuideEntry.ID,
-				0L);
-		} else {
-			Bundle arguments = getArguments();
-			if (arguments != null) {
-				shownId = arguments.getLong(FieldGuideEntry.ID,
-					0L);
-			} else {
-				shownId = 0L;
-			}
+		if (savedInstanceState == null) {
+			savedInstanceState = getArguments();
 		}
+		if (savedInstanceState == null) {
+			savedInstanceState = new Bundle();
+		}
+		shownId = savedInstanceState.getLong(FieldGuideEntry.ID, 0L);
+
+		initializePagerAdapter(savedInstanceState);
 
 		Log.d("FieldGuideEntryFragment",
-			"onCreateView: Id found 1: " + shownId);
+				"onCreateView: Id found 1: " + shownId);
+
+		gesturedetector = new GestureDetector(getActivity(),
+				new FieldGuideEntryFragmentGestureListener());
+
+		container.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				gesturedetector.onTouchEvent(event);
+				return true;
+			}
+
+		});
 
 		// Inflate the layout for this fragment
 		entry = inflater.inflate(R.layout.entry_field_guide,
 			container,
 			false);
+		// and set the onTouchListener
+		entry.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				gesturedetector.onTouchEvent(event);
+				return true;
+			}
+		});
+
+		// set the onTouchListener separately on the scrollView because that will gobble up the swipe
+		ScrollView view = (ScrollView) entry.findViewById(R.id.scrollview_descr_fieldguide_entry);
+		view.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return gesturedetector.onTouchEvent(event);
+			}
+		});
+
 		commonView = (TextView) entry.findViewById(R.id.common_fieldguide_entry);
 		latinView = (TextView) entry.findViewById(R.id.latin_fieldguide_entry);
 		descriptionView = (TextView) entry.findViewById(R.id.description_fieldguide_entry);
@@ -73,15 +110,45 @@ public class FieldGuideEntryFragment extends Fragment {
 		return entry;
 	}
 
+	private void initializePagerAdapter(Bundle savedInstanceState) {
+		int position = savedInstanceState.getInt(FieldGuideListFragment.CHECKED_POSITION,
+				0);
+		String constraint = savedInstanceState.getString(FieldGuideListFragment.CONSTRAINT);
+		Log.d(TAG, "onCreate query[" + shownId + "]["+position+"][" + constraint + "]");
+		Uri uri = null;
+		if (constraint == null || constraint.length() == 0) {
+			uri = FieldGuideEntry.CONTENT_URI;
+		} else {
+			uri = Uri.withAppendedPath(FieldGuideEntry.CONTENT_URI_FILTER,
+					constraint);
+		}
+
+		if (cursor != null && !cursor.isClosed()) {
+			cursor.close();
+		}
+		cursor=null;
+		Log.d(TAG, "going to get cursor: " + uri);
+		int counter = 0;
+		while (cursor == null && counter < 5) {
+			cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+			counter++;
+		}
+		Log.d(TAG, "cursor count[" + (cursor != null ? cursor.getCount() : 0)
+				+ "]");
+
+		pagerAdapter = new FieldGuideEntryPagerAdapter(cursor, position, this);
+
+	}
+
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// super.onCreateOptionsMenu(menu,
 		// inflater);
 
 		inflater.inflate(R.menu.field_guide_entry,
-			menu);
+				menu);
         ActionBar bar=null;
         if(MainActivity.me!=null){
-            bar = MainActivity.me.getSupportActionBar();
+            bar = MainActivity.me.getActionBar();
         }
 
         if(bar!=null) {
@@ -94,7 +161,7 @@ public class FieldGuideEntryFragment extends Fragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Log.d(TAG,
-			"onOptionsItemSelected: [" + item.getItemId() + "]");
+				"onOptionsItemSelected: [" + item.getItemId() + "]");
 		switch (item.getItemId()) {
 			case android.R.id.home:
 				Log.d(TAG,
@@ -117,6 +184,11 @@ public class FieldGuideEntryFragment extends Fragment {
 		return shownId;
 	}
 
+	public void setFieldGuideEntry(FieldGuideEntry entry){
+		fldgEntry = entry;
+		setData(entry.getId());
+	}
+
 	public void setData(long id) {
 		if (id != 0) {
 			shownId = id;
@@ -124,46 +196,47 @@ public class FieldGuideEntryFragment extends Fragment {
 			id = shownId;
 		}
 
-		Uri uri = null;
-		if (id != 0) {
-			uri = Uri.withAppendedPath(FieldGuideEntry.CONTENT_URI,
-				Long.toString(id));
-		} else {
-			uri = FieldGuideEntry.CONTENT_URI;
+		if(fldgEntry==null) {
+			Uri uri = null;
+			if (id != 0) {
+				uri = Uri.withAppendedPath(FieldGuideEntry.CONTENT_URI,
+						Long.toString(id));
+			} else {
+				uri = FieldGuideEntry.CONTENT_URI;
+			}
+
+			Log.d(TAG,
+					uri.toString());
+			Log.d(TAG,
+					MainActivity.me == null
+							? "null"
+							: "not null");
+			Log.d(TAG,
+					MainActivity.me == null || MainActivity.me.getContentResolver() == null
+							? "null"
+							: "not null");
+
+			Cursor cursor = null;
+			int counter = 0;
+			while (cursor == null && counter < 5) {
+				cursor = MainActivity.me.getContentResolver().query(uri,
+						null,
+						null,
+						null,
+						null);
+				counter++;
+			}
+			if (cursor != null) {
+				cursor.moveToFirst();
+				fldgEntry = FieldGuideAndSightingsEntryDbHelper.getFieldGuideEntryFromCursor(cursor);
+				cursor.close();
+			}
 		}
 
-		Log.d(TAG,
-			uri.toString());
-		Log.d(TAG,
-			MainActivity.me == null
-					? "null"
-					: "not null");
-		Log.d(TAG,
-			MainActivity.me == null || MainActivity.me.getContentResolver() == null
-					? "null"
-					: "not null");
-
-		Cursor cursor = null;
-		int counter=0;
-		while(cursor==null && counter<5){
-			cursor = MainActivity.me.getContentResolver().query(uri,
-					null,
-					null,
-					null,
-					null);
-			counter++;
-		}
-		FieldGuideEntry entry = null;
-		if(cursor!=null){
-			cursor.moveToFirst();
-			entry = FieldGuideAndSightingsEntryDbHelper.getFieldGuideEntryFromCursor(cursor);
-			cursor.close();
-		}
-
-		if (commonView != null && entry != null) {
-			latinView.setText(entry.latinName);
-			commonView.setText(entry.getShowCommonName());
-			descriptionView.setText(entry.getResourcedDescription());
+		if (commonView != null && fldgEntry != null) {
+			latinView.setText(fldgEntry.latinName);
+			commonView.setText(fldgEntry.getShowCommonName());
+			descriptionView.setText(fldgEntry.getResourcedDescription());
 
 			int screenSize = LibApp.getCurrentResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
 			int orientation = LibApp.getCurrentResources().getConfiguration().orientation;
@@ -172,23 +245,23 @@ public class FieldGuideEntryFragment extends Fragment {
 			switch (screenSize) {
 				case Configuration.SCREENLAYOUT_SIZE_LARGE:
 				case Configuration.SCREENLAYOUT_SIZE_XLARGE:
-					bm = entry.getLpicBitmapAsExpansion();
+					bm = fldgEntry.getLpicBitmapAsExpansion();
 					if (bm == null)
-						bm = entry.getSpicBitmapAsAsset();
+						bm = fldgEntry.getSpicBitmapAsAsset();
 					imageView.setImageBitmap(bm);
 					break;
 				default:
 					switch (orientation) {
 						case Configuration.ORIENTATION_LANDSCAPE:
-							bm = entry.getLpicBitmapAsExpansion();
+							bm = fldgEntry.getLpicBitmapAsExpansion();
 							Log.d(TAG,
 								"setData bm found for Lpic[" + bm + "]");
 							if (bm == null)
-								bm = entry.getSpicBitmapAsAsset();
+								bm = fldgEntry.getSpicBitmapAsAsset();
 							imageView.setImageBitmap(bm);
 							break;
 						default:
-							bm = entry.getSpicBitmapAsAsset();
+							bm = fldgEntry.getSpicBitmapAsAsset();
 							imageView.setImageBitmap(bm);
 							break;
 					}
@@ -201,12 +274,12 @@ public class FieldGuideEntryFragment extends Fragment {
 	public void onBackStackChanged() {
         ActionBar bar=null;
         if(MainActivity.me!=null){
-            bar = MainActivity.me.getSupportActionBar();
+            bar = MainActivity.me.getActionBar();
         }
 
         if(bar!=null) {
             bar.setHomeButtonEnabled(true);
-            int backStackEntryCount = getActivity().getSupportFragmentManager().getBackStackEntryCount();
+            int backStackEntryCount = getActivity().getFragmentManager().getBackStackEntryCount();
             Log.d(TAG,
                     "backstackEntryCount[" + backStackEntryCount + "]");
             if (backStackEntryCount > 0) {
@@ -241,9 +314,35 @@ public class FieldGuideEntryFragment extends Fragment {
 	public interface OnFieldGuideItemSelectedListener {
 		public void activateFieldGuideEntryFragment(FieldGuideEntryFragment entry, int position, long id,
 				String constraint);
+	}
 
-		void activateDivingLogSightingsEntryFragment(DivingLogSightingsEntryPagerFragment entry, int position, long id,
-				String constraint);
+	private class FieldGuideEntryFragmentGestureListener extends DivingLogGestureListener {
+
+		@Override
+		protected void onLeftSwipe() {
+			Log.d(TAG, "onLeftSwipe: back");
+			if(getView()!=null) {
+				View withFocus = getView().findFocus();
+				if (withFocus != null) {
+					withFocus.clearFocus();
+				}
+			}
+			pagerAdapter.fillBeforeEntry(FieldGuideEntryFragment.this);
+
+		}
+
+		@Override
+		protected void onRightSwipe() {
+			Log.d(TAG, "onRightSwipe: next");
+			if(getView()!=null) {
+				View withFocus = getView().findFocus();
+				if (withFocus != null) {
+					withFocus.clearFocus();
+				}
+			}
+			pagerAdapter.fillNextEntry(FieldGuideEntryFragment.this);
+		}
+
 	}
 
 }
