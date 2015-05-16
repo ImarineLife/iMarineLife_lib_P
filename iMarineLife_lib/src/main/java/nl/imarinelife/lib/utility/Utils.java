@@ -2,12 +2,18 @@ package nl.imarinelife.lib.utility;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import android.app.Fragment;
 import android.content.Context;
 import android.content.res.Resources;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.SearchView;
 
 public class Utils {
 	public static void CopyStream(InputStream is, OutputStream os) {
@@ -68,5 +74,13 @@ public class Utils {
 		final float scale = resources.getDisplayMetrics().density;
 		int px = (int) (dp * scale + 0.5f);
 		return px;
+	}
+
+	public static void setSearchTextColour(SearchView searchView, Resources resources) {
+		int searchPlateId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+		EditText searchPlate = (EditText) searchView.findViewById(searchPlateId);
+		searchPlate.setTextColor(resources.getColor(android.R.color.secondary_text_dark));
+		//searchPlate.setBackgroundResource(R.drawable.edit_text_holo_light);
+		//searchPlate.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 	}
 }

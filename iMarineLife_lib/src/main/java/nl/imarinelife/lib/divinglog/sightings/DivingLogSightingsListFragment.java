@@ -8,6 +8,7 @@ import nl.imarinelife.lib.MainActivity;
 import nl.imarinelife.lib.MarineLifeContentProvider;
 import nl.imarinelife.lib.Preferences;
 import nl.imarinelife.lib.R;
+import nl.imarinelife.lib.catalog.Catalog;
 import nl.imarinelife.lib.divinglog.db.dive.Dive;
 import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment.OnDivingLogSightingsItemSelectedListener;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
@@ -289,7 +290,10 @@ public class DivingLogSightingsListFragment extends ListFragment
 
 		MenuItem collapseItem = menu.findItem(R.id.sightings_collapse);
 		MenuItem expandItem = menu.findItem(R.id.sightings_expand);
-		if (Preferences.getBoolean(Preferences.SIGHTINGS_COLLAPSED_LAST, false)) {
+		Catalog catalog = LibApp.getInstance().getCurrentCatalog();
+		if (Preferences.getBoolean(Preferences.SIGHTINGS_COLLAPSED_LAST, false)
+				|| catalog==null
+				|| Preferences.getString(Preferences.SIGHTINGS_GROUPS_HIDDEN, "").equals(catalog.getAllGroups())) {
 			collapseItem.setVisible(false);
 			expandItem.setVisible(true);
 		} else {
@@ -303,7 +307,8 @@ public class DivingLogSightingsListFragment extends ListFragment
 		if(searchView!=null) {
             searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
-        }
+			Utils.setSearchTextColour(searchView, getActivity().getResources());
+		}
 		super.onPrepareOptionsMenu(menu);
 
 	}

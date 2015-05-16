@@ -19,8 +19,13 @@ public class Preferences {
 	public static final String LAST_FIELDGUIDE_POSITION = "lastFieldguidePosition";
 	public static final String FIELDGUIDE_GROUPS_HIDDEN = "fieldguideGroupsHidden";
 	public static final String SIGHTINGS_GROUPS_HIDDEN = "sightingsGroupsHidden";
+
+	// _Collapsed_last is niet overbodig omdat het mogelijk is dat de lijst daadwerkelijk ingeklapte
+	// waarden anders is dan de door de app geleverde apps
+	// (zeker bij sightings waar ook oude sightings in opgenomen kunnen zijn)
 	public static final String SIGHTINGS_COLLAPSED_LAST = "sightingscollapsedLast";
 	public static final String FIELDGUIDE_COLLAPSED_LAST = "fieldguidecollapsedLast";
+
 	public static final String PERSONAL_DEFAULT_CHOICE = "personalDefaultChoice";
 	public static final String SEND_ME = "SendToMeInCC";
 	public static final String CURRENT_LANGUAGE = "currentLocale";

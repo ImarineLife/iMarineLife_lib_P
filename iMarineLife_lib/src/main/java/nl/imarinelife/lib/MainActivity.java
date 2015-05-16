@@ -1090,14 +1090,18 @@ public class MainActivity extends Activity implements
 		int count = ((ViewGroup) view).getChildCount();
 		for (int i = 0; i < count; i++) {
 			View childView = ((ViewGroup) view).getChildAt(i);
-			if (childView instanceof TextView) {
+			if (childView instanceof TextView && childView.getId()==R.id.header_fieldguide_list_groupname) {
 				String groupAsShown = ((TextView) childView).getText()
 						.toString();
 				String group = ((childView instanceof DataTextView) && ((DataTextView) childView)
 						.getData(DB_VALUE) != null) ? ((DataTextView) childView)
 						.getData(DB_VALUE) : groupAsShown;
-				Preferences.toggleListValue(
-						Preferences.FIELDGUIDE_GROUPS_HIDDEN, group);
+				if(group!=null && !group.isEmpty()) {
+					Preferences.toggleListValue(
+							Preferences.FIELDGUIDE_GROUPS_HIDDEN, group);
+					Log.d(TAG, "Hidden groups [" + Preferences.getString(Preferences.FIELDGUIDE_GROUPS_HIDDEN, "") + "]");
+					invalidateOptionsMenu();
+				}
 			}
 		}
 		((FieldGuideListFragment) fragments.get("FieldGuideListFragment"))
@@ -1112,8 +1116,10 @@ public class MainActivity extends Activity implements
 			String group = ((view instanceof DataTextView) && ((DataTextView) view)
 					.getData(DB_VALUE) != null) ? ((DataTextView) view)
 					.getData(DB_VALUE) : groupAsShown;
-			Preferences.toggleListValue(Preferences.SIGHTINGS_GROUPS_HIDDEN,
-					group);
+			if(group!=null && !group.isEmpty()) {
+				Preferences.toggleListValue(Preferences.SIGHTINGS_GROUPS_HIDDEN,
+						group);
+			}
 		}
 		((DivingLogSightingsListFragment) fragments
 				.get("DivingLogSightingsListFragment")).refresh();

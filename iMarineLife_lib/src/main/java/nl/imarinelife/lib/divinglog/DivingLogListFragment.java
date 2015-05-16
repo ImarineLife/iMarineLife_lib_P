@@ -186,7 +186,8 @@ public class DivingLogListFragment extends ListFragment implements
 		if(searchView!=null) {
             searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
-        }
+			Utils.setSearchTextColour(searchView, getActivity().getResources());
+		}
 
 		super.onPrepareOptionsMenu(menu);
 

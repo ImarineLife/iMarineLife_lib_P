@@ -5,6 +5,7 @@ import nl.imarinelife.lib.MainActivity;
 import nl.imarinelife.lib.MarineLifeContentProvider;
 import nl.imarinelife.lib.Preferences;
 import nl.imarinelife.lib.R;
+import nl.imarinelife.lib.catalog.Catalog;
 import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment.OnFieldGuideItemSelectedListener;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,10 +30,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 
 public class FieldGuideListFragment extends ListFragment implements
@@ -188,12 +192,17 @@ public class FieldGuideListFragment extends ListFragment implements
         if(searchView!=null) {
 			searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
+			Utils.setSearchTextColour(searchView, getActivity().getResources());
         }
 
         MenuItem collapseItem = menu.findItem(R.id.fieldguide_collapse);
         MenuItem expandItem = menu.findItem(R.id.fieldguide_expand);
+		Catalog catalog = LibApp.getInstance().getCurrentCatalog();
+		Log.d(TAG, "Hidden groups [" + Preferences.getString(Preferences.FIELDGUIDE_GROUPS_HIDDEN, "")+"]");
         if (Preferences
-                .getBoolean(Preferences.FIELDGUIDE_COLLAPSED_LAST, false)) {
+                .getBoolean(Preferences.FIELDGUIDE_COLLAPSED_LAST, false)
+				|| catalog==null
+				|| Preferences.getString(Preferences.FIELDGUIDE_GROUPS_HIDDEN, "").equals(catalog.getAllGroups())) {
             collapseItem.setVisible(false);
             expandItem.setVisible(true);
         } else {
