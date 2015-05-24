@@ -5,11 +5,48 @@
     android:layout_height="match_parent" >
 
     <LinearLayout
-        android:id="@+id/dl_id_locationdialog_bar_id"
+        android:id="@+id/dl_id_locationdialog_searchbar_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dark"
-        android:gravity="right"
+        android:gravity="start"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/dl_id_locationdialog_searchbarbuttons_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/dark"
+            android:gravity="start"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/dl_id_locationdialog_next_button_id"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@android:drawable/arrow_down_float" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <SearchView
+            android:id="@+id/dl_id_locationdialog_searchtext_id"
+            android:layout_width="fill_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/dl_id_locationdialog_bar_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dl_id_locationdialog_searchbar_id"
+        android:background="@color/dark"
+        android:gravity="end"
         android:orientation="horizontal" >
 
         <Button

@@ -1,5 +1,26 @@
 package nl.imarinelife.lib.fieldguide;
 
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+
 import nl.imarinelife.lib.LibApp;
 import nl.imarinelife.lib.MainActivity;
 import nl.imarinelife.lib.MarineLifeContentProvider;
@@ -11,31 +32,6 @@ import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
 import nl.imarinelife.lib.utility.FilterCursorWrapper;
 import nl.imarinelife.lib.utility.Utils;
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.ListFragment;
-import android.app.LoaderManager;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.TextView;
 
 
 public class FieldGuideListFragment extends ListFragment implements

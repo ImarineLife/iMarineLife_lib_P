@@ -67,6 +67,15 @@ public class LocationCursorProvider implements CursorProvider {
 	}
 
 	@Override
+	public int getCurrentIndex(){
+		if(cursor!=null){
+			return cursor.getPosition();
+		}else {
+			return -1;
+		}
+	}
+
+	@Override
 	public int getIndex(String value) {
 		if (value == null)
 			return 0;

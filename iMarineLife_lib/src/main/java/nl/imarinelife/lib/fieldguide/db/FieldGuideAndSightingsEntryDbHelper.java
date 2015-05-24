@@ -1073,11 +1073,15 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 			}
 			cursor.close();
 		}
-		String sql = "select " + getCommaSeparatedString(ALL) + " from "
-				+ SIGHTINGS_AS_S + "," + FIELDGUIDE_AS_F + " where S."
-				+ KEY_FIELDGUIDE_ID + "=F." + KEY_ROWID + " and S."
-				+ KEY_CATNAME + "=F." + KEY_CATNAME + " and S." + KEY_DIVENR
-				+ "=" + diveNr + " and F." + KEY_CATNAME + "='" + catalog + "'"
+		String sql = "select " + getCommaSeparatedString(ALL)
+				+ " from "	+ SIGHTINGS_AS_S
+				+ "," + FIELDGUIDE_AS_F
+				+ " where S." + KEY_FIELDGUIDE_ID + "=F." + KEY_ROWID
+				+ " and S."	+ KEY_CATNAME + "=F." + KEY_CATNAME
+				+ " and S." + KEY_DIVENR + "=" + diveNr
+				+ " and S." + KEY_SIGHTING_VALUE +"!='0'"
+				+ " and S." + KEY_SIGHTING_VALUE +"!='?'"
+				+ " and F." + KEY_CATNAME + "='" + catalog + "' "
 				+ " order by S." + KEY_ORDERNR;
 		Log.d(TAG, sql);
 		if (dbExternal == null) {
@@ -1091,10 +1095,11 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 	}
 
 	public Cursor querySightingAsIsForSighting(int rownr) {
-		String sql = "select " + getCommaSeparatedString(ALL) + " from "
-				+ SIGHTINGS_AS_S + "," + FIELDGUIDE_AS_F + " where S."
-				+ KEY_FIELDGUIDE_ID + "=F." + KEY_ROWID + " and S." + KEY_ROWID
-				+ "=" + rownr;
+		String sql = "select " + getCommaSeparatedString(ALL)
+				+ " from " + SIGHTINGS_AS_S
+				+ "," + FIELDGUIDE_AS_F
+				+ " where S." + KEY_FIELDGUIDE_ID + "=F." + KEY_ROWID
+				+ " and S." + KEY_ROWID	+ "=" + rownr;
 		Cursor mCursor = dbExternal.rawQuery(sql, null);
 		return mCursor;
 	}

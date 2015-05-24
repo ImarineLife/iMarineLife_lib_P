@@ -27,4 +27,6 @@ public interface CursorProvider extends Serializable {
 	public int checkRemoval(Context ctx, Object... values);
 
 	public Object getMinimalObject(Context ctx, Object... values);
+
+	public int getCurrentIndex();
 }

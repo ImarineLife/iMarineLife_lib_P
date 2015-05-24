@@ -51,6 +51,8 @@
     <string name="dl_id_dialog_choose_buttontext">Choose</string>
     <string name="dl_id_dialog_current_buttontext">Today</string>
     <string name="dl_id_dialog_cancel_buttontext">Back</string>
+    <string name="dl_id_dialog_next_buttontext">Next</string>
+    <string name="dl_id_dialog_prev_buttontext">Prev.</string>
     <string name="dl_id_dialog_add_buttontext">+</string>
     <string name="dl_id_dialog_remove_buttontext">-</string>
     <string name="dl_id_dialog_ok_buttontext">OK</string>

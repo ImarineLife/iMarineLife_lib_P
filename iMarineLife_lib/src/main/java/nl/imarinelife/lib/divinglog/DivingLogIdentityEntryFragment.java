@@ -21,8 +21,9 @@ import nl.imarinelife.lib.utility.dialogs.DateWheelDialogFragment.OnDateComplete
 import nl.imarinelife.lib.utility.dialogs.EditTextDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.NumberWheelDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.NumberWheelDialogFragment.OnCompleteListener;
-import nl.imarinelife.lib.utility.dialogs.TextWheelDialogFragment;
-import nl.imarinelife.lib.utility.dialogs.TextWheelDialogFragment.OnTextCompleteListener;
+import nl.imarinelife.lib.utility.dialogs.SearchTextWheelDialogFragment;
+
+import nl.imarinelife.lib.utility.dialogs.SearchTextWheelDialogFragment.OnTextCompleteListener;
 import nl.imarinelife.lib.utility.dialogs.TimeWheelDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.TimeWheelDialogFragment.OnTimeCompleteListener;
 
@@ -77,7 +78,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
-		setRetainInstance(true);
+		//setRetainInstance(true);
 		/*
 		 * if (savedInstanceState != null && !savedInstanceState.isEmpty()) {
 		 * initializeBundle(savedInstanceState); } else {
@@ -212,7 +213,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 				String currentCatalog = (LibApp.getCurrentCatalogName());
 				Log.d(TAG, diveCatalog + "    " + currentCatalog);
 				if (diveCatalog.equals(currentCatalog)) {
-					TextWheelDialogFragment fragment = getTextWheelDialogFragmentForLocation();
+					SearchTextWheelDialogFragment fragment = getTextWheelDialogFragmentForLocation();
 					showDialog(fragment);
 					MainActivity.me.currentDive.setChanged(true);
 				} else {
@@ -385,7 +386,7 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		return frag;
 	}
 
-	protected TextWheelDialogFragment getTextWheelDialogFragmentForLocation() {
+	protected SearchTextWheelDialogFragment getTextWheelDialogFragmentForLocation() {
 		String currentLocation = null;
 		if (MainActivity.me.currentDive != null
 				&& MainActivity.me.currentDive.getLocation() != null) {
@@ -399,12 +400,18 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		final int cancelbuttonId;
 		final int addbuttonId;
 		final int minusbuttonId;
+		final int searchtextId;
+		final int nextbuttonId;
+		final int previousbuttonId;
 		layoutId = R.layout.divinglog_identification_location_dialog;
 		numberWheelId = R.id.dl_id_locationdialog_wheel_id;
 		choosebuttonId = R.id.dl_id_locationdialog_choose_button_id;
 		cancelbuttonId = R.id.dl_id_locationdialog_cancel_button_id;
 		addbuttonId = R.id.dl_id_locationdialog_add_button_id;
 		minusbuttonId = R.id.dl_id_locationdialog_remove_button_id;
+		searchtextId = R.id.dl_id_locationdialog_searchtext_id;
+		nextbuttonId = R.id.dl_id_locationdialog_next_button_id;
+
 
 		@SuppressWarnings("serial")
 		OnTextCompleteListener listener = new OnTextCompleteListener() {
@@ -416,10 +423,13 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 			}
 		};
 
-		TextWheelDialogFragment frag = TextWheelDialogFragment.newInstance(
+		SearchTextWheelDialogFragment frag = SearchTextWheelDialogFragment.newInstance(
 				currentLocation, new LocationCursorProvider(getActivity()), 5,
-				layoutId, numberWheelId, 0, choosebuttonId, cancelbuttonId,
-				addbuttonId, minusbuttonId, DialogFragment.STYLE_NO_TITLE,
+				layoutId, numberWheelId,
+				searchtextId, nextbuttonId,
+				0, choosebuttonId, cancelbuttonId,
+				addbuttonId, minusbuttonId,
+				DialogFragment.STYLE_NO_TITLE,
 				R.style.iMarineLifeDialogTheme);
 		frag.setOnCompleteListener(listener);
 		return frag;
@@ -684,8 +694,6 @@ public class DivingLogIdentityEntryFragment extends Fragment {
 		}
 		outState.putBoolean(MainActivity.KEY_BOOL_IDFROMDB, shownIdFromDb);
 		outState.putInt(MainActivity.KEY_INT_CURRENTID, currentId);
-		outState.putSerializable(MainActivity.KEY_SER_DIVE,
-				MainActivity.me.currentDive);
 		return outState;
 	}
 
