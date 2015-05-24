@@ -38,6 +38,7 @@ public class FieldGuideEntryFragment extends Fragment {
 	private ImageView		imageView		= null;
 
 	private long			shownId			= 0L;
+	private int				position		= 0;
 	FieldGuideEntry 		fldgEntry 		= null;
 	FieldGuideEntryPagerAdapter	pagerAdapter;
 
@@ -46,7 +47,7 @@ public class FieldGuideEntryFragment extends Fragment {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		setRetainInstance(true);
+		//setRetainInstance(true);
 		super.onCreate(savedInstanceState);
 	}
 
@@ -60,6 +61,7 @@ public class FieldGuideEntryFragment extends Fragment {
 			savedInstanceState = new Bundle();
 		}
 		shownId = savedInstanceState.getLong(FieldGuideEntry.ID, 0L);
+		position = savedInstanceState.getInt(FieldGuideListFragment.CHECKED_POSITION);
 
 		initializePagerAdapter(savedInstanceState);
 
@@ -106,13 +108,11 @@ public class FieldGuideEntryFragment extends Fragment {
 		descriptionView = (TextView) entry.findViewById(R.id.description_fieldguide_entry);
 		imageView = (ImageView) entry.findViewById(R.id.image_fieldguide_entry);
 
-		setData(shownId);
+		setData(shownId, position);
 		return entry;
 	}
 
 	private void initializePagerAdapter(Bundle savedInstanceState) {
-		int position = savedInstanceState.getInt(FieldGuideListFragment.CHECKED_POSITION,
-				0);
 		String constraint = savedInstanceState.getString(FieldGuideListFragment.CONSTRAINT);
 		Log.d(TAG, "onCreate query[" + shownId + "]["+position+"][" + constraint + "]");
 		Uri uri = null;
@@ -177,24 +177,29 @@ public class FieldGuideEntryFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putLong(FieldGuideEntry.ID,
-			shownId);
+				shownId);
+		outState.putInt(FieldGuideListFragment.CHECKED_POSITION, position);
+		Log.d(TAG, "shownId secured as [" + shownId + "] position["+position+"]");
 	}
 
 	public long getShownId() {
 		return shownId;
 	}
 
-	public void setFieldGuideEntry(FieldGuideEntry entry){
+	public void setFieldGuideEntry(FieldGuideEntry entry, int position){
 		fldgEntry = entry;
-		setData(entry.getId());
+		setData(entry.getId(), position);
 	}
 
-	public void setData(long id) {
+	public void setData(long id, int position) {
 		if (id != 0) {
 			shownId = id;
+			this.position=position;
+			FieldGuideListFragment.setTopPosition(position);
 		} else {
 			id = shownId;
 		}
+		Log.d(TAG,"shownId set to ["+shownId+"]");
 
 		if(fldgEntry==null) {
 			Uri uri = null;

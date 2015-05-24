@@ -1,19 +1,15 @@
 package nl.imarinelife.lib.fieldguide;
 
+import android.app.FragmentManager;
+import android.database.Cursor;
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import nl.imarinelife.lib.Preferences;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryFragment;
-import nl.imarinelife.lib.divinglog.sightings.Sighting;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
-
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.util.Log;
 
 public class FieldGuideEntryPagerAdapter {
 
@@ -33,7 +29,7 @@ public class FieldGuideEntryPagerAdapter {
 		cursor.moveToPosition(currentPosition);
 		FieldGuideEntry currentEntry = FieldGuideAndSightingsEntryDbHelper
 				.getFieldGuideEntryFromCursor(cursor);
-		fragment.setFieldGuideEntry(currentEntry);
+		fragment.setFieldGuideEntry(currentEntry, currentPosition);
 		beforePosition = getBeforePosition(currentPosition);
 		nextPosition = getNextPosition(currentPosition);
 		Log.d(TAG, "constructor: bef["+beforePosition+"]cur["+currentPosition+"]next["+nextPosition+"]");
@@ -52,7 +48,7 @@ public class FieldGuideEntryPagerAdapter {
 				cursor.moveToPosition(currentPosition);
 				FieldGuideEntry entry = FieldGuideAndSightingsEntryDbHelper
 						.getFieldGuideEntryFromCursor(cursor);
-				fragment.setFieldGuideEntry(entry);
+				fragment.setFieldGuideEntry(entry, currentPosition);
 				nextPosition = getNextPosition(currentPosition);
 			}else{
 				// do nothing - keep showing old situation
@@ -73,7 +69,8 @@ public class FieldGuideEntryPagerAdapter {
 				cursor.moveToPosition(currentPosition);
 				FieldGuideEntry entry = FieldGuideAndSightingsEntryDbHelper
 						.getFieldGuideEntryFromCursor(cursor);
-				fragment.setFieldGuideEntry(entry);
+				fragment.setFieldGuideEntry(entry, currentPosition);
+
 				beforePosition = getBeforePosition(currentPosition);
 			}else{
 				// do nothing - keep showing old situation

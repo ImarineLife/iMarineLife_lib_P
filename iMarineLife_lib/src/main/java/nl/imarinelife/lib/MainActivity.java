@@ -40,7 +40,6 @@ import nl.imarinelife.lib.divinglog.db.dive.Dive;
 import nl.imarinelife.lib.divinglog.db.dive.DiveDbHelper;
 import nl.imarinelife.lib.divinglog.db.dive.DiveProfilePartDbHelper;
 import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryFragment;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment.OnDivingLogSightingsItemSelectedListener;
 import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsListFragment;
 import nl.imarinelife.lib.divinglog.sightings.Sighting;
 import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment;
@@ -53,7 +52,7 @@ import nl.imarinelife.lib.utility.ExpansionFileAccessHelper;
 
 public class MainActivity extends Activity implements
 		OnFieldGuideItemSelectedListener, OnDivingLogItemSelectedListener,
-		OnDivingLogSightingsItemSelectedListener, FragmentManager.OnBackStackChangedListener {
+		DivingLogSightingsEntryFragment.OnDivingLogSightingsItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 	private static final String TAG = "MainActivity";
 
 	public static final String FRAME1 = "contentframe_1";

@@ -28,7 +28,7 @@ public class DivingLogSightingsEntryPagerAdapter {
         cursor.moveToPosition(currentPosition);
         Sighting currentSighting = FieldGuideAndSightingsEntryDbHelper
                 .getSightingFromCursor(cursor);
-        fragment.setSighting(currentSighting);
+        fragment.setSighting(currentSighting, currentPosition);
         beforePosition = getBeforePosition(currentPosition);
         nextPosition = getNextPosition(currentPosition);
     }
@@ -46,7 +46,7 @@ public class DivingLogSightingsEntryPagerAdapter {
                 cursor.moveToPosition(currentPosition);
                 Sighting currentSighting = FieldGuideAndSightingsEntryDbHelper
                         .getSightingFromCursor(cursor);
-                fragment.setSighting(currentSighting);
+                fragment.setSighting(currentSighting, currentPosition);
                 nextPosition = getNextPosition(currentPosition);
             }else{
                 // do nothing - keep showing old situation
@@ -66,7 +66,7 @@ public class DivingLogSightingsEntryPagerAdapter {
                 cursor.moveToPosition(currentPosition);
                 Sighting currentSighting = FieldGuideAndSightingsEntryDbHelper
                         .getSightingFromCursor(cursor);
-                fragment.setSighting(currentSighting);
+                fragment.setSighting(currentSighting,currentPosition);
                 beforePosition = getBeforePosition(currentPosition);
             }else{
                 // do nothing - keep showing old situation

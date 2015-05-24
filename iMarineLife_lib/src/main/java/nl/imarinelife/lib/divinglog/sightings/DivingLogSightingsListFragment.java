@@ -9,8 +9,7 @@ import nl.imarinelife.lib.MarineLifeContentProvider;
 import nl.imarinelife.lib.Preferences;
 import nl.imarinelife.lib.R;
 import nl.imarinelife.lib.catalog.Catalog;
-import nl.imarinelife.lib.divinglog.db.dive.Dive;
-import nl.imarinelife.lib.divinglog.sightings.DivingLogSightingsEntryPagerFragment.OnDivingLogSightingsItemSelectedListener;
+import nl.imarinelife.lib.fieldguide.FieldGuideEntryFragment;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.utility.ConnectionDetector;
 import nl.imarinelife.lib.utility.FilterCursorWrapper;
@@ -513,6 +512,14 @@ public class DivingLogSightingsListFragment extends ListFragment
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		Log.d(TAG, "ListItemClicked hiding keyboard");
+		Utils.hideKeyboard(this);
+		checkedPosition = position;
+		topPosition = getListView().getFirstVisiblePosition();
+		Preferences.setInt(Preferences.LAST_FIELDGUIDE_POSITION, position);
+		// setSelection(position);
+		showDetails(id);
+
 		setSelection(position);
 	}
 
@@ -521,19 +528,32 @@ public class DivingLogSightingsListFragment extends ListFragment
 	 * displaying a fragment in-place in the current UI
 	 */
 	public void showDetails(long fieldguideId) {
+
 		// We can display everything in-place with fragments, so update
 		// the list to highlight the selected item and show the data.
 		if (fieldguideId != 0L) {
-			Log.d(TAG, "query selected item " + checkedPosition + " "
-					+ fieldguideId);
+			Log.d(TAG, "query selected item position[" + checkedPosition
+					+ "] id[" + fieldguideId + "]");
 			getListView().setItemChecked(checkedPosition, true);
 		}
 
-		details = new DivingLogSightingsEntryFragment();
+		this.fieldguideId = fieldguideId;
 
-		((OnDivingLogSightingsItemSelectedListener) getActivity())
-				.activateDivingLogSightingsEntryFragment(details,
-						checkedPosition, fieldguideId, constraint);
+		// FieldGuideEntryFragment details = (FieldGuideEntryFragment)
+		// getFragmentManager().findFragmentByTag(FieldGuideEntryFragment.class.getName());
+		DivingLogSightingsEntryFragment details = new DivingLogSightingsEntryFragment();
+		if (mDualPane) {
+			// Check what fragment is currently shown, replace if needed.
+			if (details != null && details.getShownId() != fieldguideId) {
+				// fill fragment with correct data.
+				details.setData(fieldguideId, checkedPosition);
+			}
+		}
+
+		((DivingLogSightingsEntryFragment.OnDivingLogSightingsItemSelectedListener) getActivity())
+				.activateDivingLogSightingsEntryFragment(details, checkedPosition, fieldguideId,
+						constraint);
+
 	}
 
 	public Uri getCursorUri() {

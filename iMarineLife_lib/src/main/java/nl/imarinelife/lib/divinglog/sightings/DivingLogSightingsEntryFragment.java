@@ -11,6 +11,7 @@ import nl.imarinelife.lib.MarineLifeContentProvider;
 import nl.imarinelife.lib.Preferences;
 import nl.imarinelife.lib.R;
 import nl.imarinelife.lib.catalog.Catalog;
+import nl.imarinelife.lib.fieldguide.FieldGuideListFragment;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideAndSightingsEntryDbHelper;
 import nl.imarinelife.lib.fieldguide.db.FieldGuideEntry;
 import nl.imarinelife.lib.utility.DivingLogGestureListener;
@@ -25,6 +26,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -72,6 +74,7 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	public String checkValues;
 
 	private long shownId = 0L;
+	private int position = 0;
 	DivingLogSightingsEntryPagerAdapter	pagerAdapter;
 
 	@Override
@@ -91,6 +94,8 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 			savedInstanceState = new Bundle();
 		}
 		shownId = savedInstanceState.getLong(FieldGuideEntry.ID, 0L);
+		position = savedInstanceState.getInt(DivingLogSightingsListFragment.CHECKED_POSITION);
+
 
 		initializePagerAdapter(savedInstanceState);
 
@@ -203,15 +208,15 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 		}
 
 		if (shownId != 0) {
-			setData(shownId);
+			setData(shownId, position);
 		}
 		return entry;
 	}
 
 	private void initializePagerAdapter(Bundle savedInstanceState) {
-		int position = savedInstanceState.getInt(DivingLogSightingsListFragment.CHECKED_POSITION,
-				0);
 		String constraint = savedInstanceState.getString(DivingLogSightingsListFragment.CONSTRAINT);
+		Log.d(TAG, "onCreate query[" + shownId + "]["+position+"][" + constraint + "]");
+
 		int diveNr = MainActivity.me.currentDive.getDiveNr();
 		if (SingletonCursor.getCursor() == null || SingletonCursor.getCursor().isClosed()) {
 			FieldGuideAndSightingsEntryDbHelper dbHelper = FieldGuideAndSightingsEntryDbHelper.getInstance(this.getActivity());
@@ -302,24 +307,28 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putLong(FieldGuideEntry.ID, shownId);
+		outState.putInt(DivingLogSightingsListFragment.CHECKED_POSITION, position);
 	}
 
 	public long getShownId() {
 		return shownId;
 	}
 
-	public void setSighting(Sighting sighting){
+	public void setSighting(Sighting sighting, int position){
 		this.sighting=sighting;
-		setData(sighting.fieldguide_id);
+		setData(sighting.fieldguide_id, position);
 	}
 
-	public void setData(long fieldguideId) {
+	public void setData(long fieldguideId, int position) {
 		Log.d(TAG, "setData fieldguideId[" + fieldguideId + "]");
 		if (fieldguideId != 0) {
 			shownId = fieldguideId;
+			this.position = position;
+			DivingLogSightingsListFragment.setTopPosition(position);
 		} else {
 			fieldguideId = shownId;
 		}
+		Log.d(TAG,"shownId set to ["+shownId+"]");
 
 		if (sighting == null) {
 			Uri uri = null;
@@ -506,6 +515,12 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	public void onStart() {
 		// getActivity().getSupportFragmentManager().addOnBackStackChangedListener(this);
 		super.onStart();
+	}
+
+	public interface OnDivingLogSightingsItemSelectedListener {
+		public void activateDivingLogSightingsEntryFragment(
+				DivingLogSightingsEntryFragment entry, int position,
+				long fieldguideId, String constraint);
 	}
 
 	@Override

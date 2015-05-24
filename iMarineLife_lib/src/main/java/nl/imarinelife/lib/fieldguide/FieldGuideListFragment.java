@@ -289,7 +289,7 @@ public class FieldGuideListFragment extends ListFragment implements
 			// Check what fragment is currently shown, replace if needed.
 			if (details != null && details.getShownId() != id) {
 				// fill fragment with correct data.
-				details.setData(id);
+				details.setData(id, checkedPosition);
 			}
 		}
 		((OnFieldGuideItemSelectedListener) getActivity())
