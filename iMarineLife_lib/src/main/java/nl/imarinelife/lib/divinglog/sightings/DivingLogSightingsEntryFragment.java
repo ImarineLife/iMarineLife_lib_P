@@ -166,6 +166,7 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 						.getResourcedValue(currentCatalog.getValuesMapping(),
 								sightingChoice, null);
 				button.setText(showSightingChoice);
+				//noinspection ResourceType
 				button.setId(buttonId);
 				buttonId++;
 				button.setOnClickListener(new OnClickListener() {
@@ -284,7 +285,7 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 		inflater.inflate(R.menu.sightings_entry, menu);
         Activity act = MainActivity.me;
         if(act!= null && act.getActionBar()!=null) {
-            act.getActionBar().setHomeButtonEnabled(true);
+			((MainActivity)act).setHomeButtonEnabled(true);
         }else{
             Log.d(TAG, "no Activity to set the HomeButton enabled for");
         }
@@ -485,7 +486,7 @@ public class DivingLogSightingsEntryFragment extends Fragment implements
 	public void onBackStackChanged() {
         Activity act = MainActivity.me;
         ActionBar bar = act.getActionBar();
-		act.getActionBar().setHomeButtonEnabled(true);
+		((MainActivity)act).setHomeButtonEnabled(true);
 		int backStackEntryCount = getActivity()
 				.getFragmentManager().getBackStackEntryCount();
 		Log.d(TAG, "backstackEntryCount[" + backStackEntryCount + "]");

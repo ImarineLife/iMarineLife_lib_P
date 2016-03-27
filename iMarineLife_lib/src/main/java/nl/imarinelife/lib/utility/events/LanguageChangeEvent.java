@@ -1,7 +1,5 @@
 package nl.imarinelife.lib.utility.events;
 
-import java.util.Locale;
-
 import nl.imarinelife.lib.LibApp;
 import nl.imarinelife.lib.Preferences;
 import nl.imarinelife.lib.R;
@@ -65,6 +63,7 @@ public class LanguageChangeEvent {
 				FragmentTransaction ft = (activity).getFragmentManager()
 						.beginTransaction();
 				ft.addToBackStack(null);
+				ft.commit();
 				//fragment.show(ft, "adddialog");
 
 			} else {

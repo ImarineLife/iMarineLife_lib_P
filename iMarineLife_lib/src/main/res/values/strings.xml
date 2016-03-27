@@ -95,7 +95,7 @@
     <string name="send_prerequisite_name_and_code">Provide your name and code on the main screen.</string>
     <string name="send_prerequisite_notsent">These sightings have already been sent. You can send them only once.</string>
     <string name="send_prerequisite_internet">You are not connected to the internet right now. Try again later.</string>
-    <string name="send_are_you_sure">You can send each log entry only once. Are you sure you want to send it now?</string>
+    <string name="send_are_you_sure">Sending the log entry will also send on your name and emailadres. These will not be used for any other purpose than validating your input. You can send each log entry only once. Are you sure you want to send it now?</string>
     <string name="send_mailadres_not_ok">The email address you provided on the main screen is not valid. Please change the address or the setting to receive the sightings yourself.</string>
     <string name="send_mailadres_null">You did not provide an email address on the main screen. Please change the address or the setting to receive the sightings yourself.</string>
     <string name="send_succesful">The sightings have been sent.</string>

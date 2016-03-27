@@ -29,6 +29,7 @@ public class GMailSender extends javax.mail.Authenticator {
 	private static String TAG = "GMailSender";
 	
 	private String mailhost = "smtp.gmail.com";
+	private String mailport = "465";
 	private String user;
 	private String password;
 	private Session session;
@@ -43,16 +44,16 @@ public class GMailSender extends javax.mail.Authenticator {
 		this.password = password;
 
 		Properties props = new Properties();
-		props.setProperty("mail.transport.protocol", "smtp");
-		props.setProperty("mail.host", mailhost);
-		props.put("mail.smtp.starttls.enable","true");
+		props.put("mail.smtp.host", mailhost);
+		props.put("mail.smtp.socketFactory.port", mailport);
+		props.put("mail.smtp.port", mailport);
+
 		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", "465");
-		props.put("mail.smtp.socketFactory.port", "465");
 		props.put("mail.smtp.socketFactory.class",
 				"javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.socketFactory.fallback", "false");
-		props.setProperty("mail.smtp.quitwait", "false");
+
+		props.put("mail.smtp.quitwait", "false");
 
 		session = Session.getDefaultInstance(props, this);
 	}
@@ -68,67 +69,55 @@ public class GMailSender extends javax.mail.Authenticator {
 
 	public synchronized void sendMail(String subject, String body,
 			String sender, String recipients, String fileName) throws Exception {
-		Log.d(TAG, "sendMail[" + subject + "]["+body+"]["+sender+"][to: "+recipients+"][fileName: "+fileName+"]");
-		MimeMessage message = new MimeMessage(session);
-		DataHandler handler = new DataHandler(new ByteArrayDataSource(
-				body.getBytes(), "text/plain"));
-		message.setSender(new InternetAddress(sender));
-		message.setFrom(new InternetAddress(sender));
-		message.setSubject(subject);
-		message.setDataHandler(handler);
-		if (recipients.indexOf(',') > 0)
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(recipients));
-		else
-			message.setRecipient(Message.RecipientType.TO, new InternetAddress(
-					recipients));
-		if (fileName != null) {
-			addAttachment(fileName, body);
-			message.setContent(_multipart);
-		}
-
-        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
-        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-        mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-        mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
-        Thread.currentThread().setContextClassLoader( getClass().getClassLoader() );
-		Transport.send(message);
-
+		sendMail(subject, body, sender, recipients, null, fileName);
 	}
 
 	public synchronized void sendMail(String subject, String body,
 			String sender, String recipients, String cc, String fileName)
 			throws Exception {
-		Log.d(TAG, "sendMail[" + subject + "]["+body+"]["+sender+"][to: "+recipients+"][cc: "+cc+"][fileName: "+fileName+"]");
-		MimeMessage message = new MimeMessage(session);
-		DataHandler handler = new DataHandler(new ByteArrayDataSource(
-				body.getBytes(), "text/plain"));
-		message.setSender(new InternetAddress(sender));
-		message.setFrom(new InternetAddress(sender));
-		message.setSubject(subject);
-		message.setDataHandler(handler);
-		if (recipients.indexOf(',') > 0)
-			message.setRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(recipients));
-		else
-			message.setRecipient(Message.RecipientType.TO, new InternetAddress(
-					recipients));
-		if (cc != null && cc.trim().length()>0) {
-			if (cc.indexOf(',') > 0)
-				message.setRecipients(Message.RecipientType.CC,
-						InternetAddress.parse(cc));
+		try {
+			Log.d(TAG, "sendMail[" + subject + "][" + body + "][" + sender + "][to: " + recipients + "][fileName: " + fileName + "]");
+			MimeMessage message = new MimeMessage(session);
+			DataHandler handler = new DataHandler(new ByteArrayDataSource(
+					body.getBytes(), "text/plain"));
+			message.setSender(new InternetAddress(sender));
+			message.setFrom(new InternetAddress(sender));
+			message.setSubject(subject);
+			message.setDataHandler(handler);
+			if (recipients.indexOf(',') > 0)
+				message.setRecipients(Message.RecipientType.TO,
+						InternetAddress.parse(recipients));
 			else
-				message.setRecipient(Message.RecipientType.CC,
-						new InternetAddress(cc));
-		}
-		if (fileName != null) {
-			addAttachment(fileName, body);
-			message.setContent(_multipart);
-		}
-		Transport.send(message);
+				message.setRecipient(Message.RecipientType.TO, new InternetAddress(
+						recipients));
+			if (cc != null && cc.trim().length() > 0) {
+				if (cc.indexOf(',') > 0)
+					message.setRecipients(Message.RecipientType.CC,
+							InternetAddress.parse(cc));
+				else
+					message.setRecipient(Message.RecipientType.CC,
+							new InternetAddress(cc));
+			}
+			if (fileName != null) {
+				addAttachment(fileName, body);
+				message.setContent(_multipart);
+			}
 
+			MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+			mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+			mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+			mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+			mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+			mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
+			Log.d(TAG, "send started");
+			Transport.send(message);
+			Log.d(TAG, "send ended");
+		}catch(Exception e){
+			Log.e(TAG,"Exception while sending mail",e);
+			throw e;
+		}
 	}
 
 	public class ByteArrayDataSource implements DataSource {

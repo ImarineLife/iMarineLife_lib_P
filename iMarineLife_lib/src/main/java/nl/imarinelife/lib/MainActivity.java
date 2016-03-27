@@ -1,5 +1,6 @@
 package nl.imarinelife.lib;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -126,7 +127,7 @@ public class MainActivity extends Activity implements
 
 		getFragmentManager().addOnBackStackChangedListener(this);
 
-		getActionBar().setHomeButtonEnabled(true);
+		setHomeButtonEnabled(true);
 
 	}
 
@@ -840,11 +841,16 @@ public class MainActivity extends Activity implements
 						+ backStackEntryCount + "]");
 		if (backStackEntryCount > 0) {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
-			getActionBar().setHomeButtonEnabled(true);
+			setHomeButtonEnabled(true);
 		} else {
 			getActionBar().setDisplayHomeAsUpEnabled(false);
-			getActionBar().setHomeButtonEnabled(false);
+			setHomeButtonEnabled(false);
 		}
+	}
+
+	@TargetApi(14)
+	public void setHomeButtonEnabled(boolean enable){
+		getActionBar().setHomeButtonEnabled(enable);
 	}
 
 	private boolean currentFragmentIsDiveRelated() {

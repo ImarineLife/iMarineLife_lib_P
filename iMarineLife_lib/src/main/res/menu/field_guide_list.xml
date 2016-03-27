@@ -1,29 +1,34 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/fieldguide_collapse"
         android:icon="@drawable/navigation_collapse"
         android:showAsAction="ifRoom"
-        android:title="@string/collapse"/> 
+        android:title="@string/collapse"
+        tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/fieldguide_expand"
         android:icon="@drawable/navigation_expand"
         android:showAsAction="ifRoom"
-        android:title="@string/expand"/>
+        android:title="@string/expand"
+        tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/fieldguide_search"
         android:actionLayout="@layout/search_field_guide"
         android:actionViewClass="android.widget.SearchView"
         android:icon="@android:drawable/ic_menu_search"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/search_hint"/>
+        android:title="@string/search_hint"
+        tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings"
+        tools:ignore="AppCompatResource" />
 
 
 </menu>

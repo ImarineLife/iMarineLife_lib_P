@@ -14,8 +14,8 @@ public class Preferences {
 	public static final String USER_NAME = "userName";
 	public static final String USER_EMAIL = "userEmail";
 	public static final String USER_CODE = "userCode";
-	public static final String USES_SD = "usesSD";
-	public static final String APP_STORE_EMPTY = "AppStorageEmpty";
+	//public static final String USES_SD = "usesSD";
+	//public static final String APP_STORE_EMPTY = "AppStorageEmpty";
 	public static final String LAST_FIELDGUIDE_POSITION = "lastFieldguidePosition";
 	public static final String FIELDGUIDE_GROUPS_HIDDEN = "fieldguideGroupsHidden";
 	public static final String SIGHTINGS_GROUPS_HIDDEN = "sightingsGroupsHidden";

@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-public class WheelDrivenProfilePartEditText {
+import java.io.Serializable;
+
+public class WheelDrivenProfilePartEditText implements Serializable{
     private static String TAG = "WheelDrivenProfielPartEditText";
     transient public EditText numberEditText;
     transient public DiveProfilePart currentPart;

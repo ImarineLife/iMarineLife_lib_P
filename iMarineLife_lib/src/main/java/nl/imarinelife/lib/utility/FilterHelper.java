@@ -2,6 +2,7 @@ package nl.imarinelife.lib.utility;
 
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,11 +39,12 @@ public class FilterHelper implements OnEditorActionListener, TextWatcher {
         if (this.adapter.isShowingSelection()) {
             Log.d(TAG, "Filter setupSearchBox - expanding ActionView because selection is showing");
             this.editText.setText(this.adapter.getSelectionConstraint());
-            menuItem.expandActionView();
+            //menuItem.expandActionView();
+            MenuItemCompat.expandActionView(menuItem);
             ((BaseAdapter) (this.adapter)).notifyDataSetChanged();
         }
 
-        menuItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return false;
@@ -54,7 +56,7 @@ public class FilterHelper implements OnEditorActionListener, TextWatcher {
             }
         });
 
-        menuItem.setOnActionExpandListener( new MenuItem.OnActionExpandListener() {
+        MenuItemCompat.setOnActionExpandListener(menuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 Log.d(TAG, "Filter OnActionCollapseListener");
@@ -82,7 +84,7 @@ public class FilterHelper implements OnEditorActionListener, TextWatcher {
         Log.d(TAG, "Filter onEditorAction [" + event.getKeyCode() + "]");
         if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
             hideKeyboard();
-            menuItem.collapseActionView();
+            MenuItemCompat.collapseActionView(menuItem);
             return true;
         }
         return false;

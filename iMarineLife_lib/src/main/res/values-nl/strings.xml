@@ -94,7 +94,7 @@
     <string name="send_prerequisite_name_and_code">U moet uw waarnemerscode en naam ingevuld hebben in het beginscherm.</string>
     <string name="send_prerequisite_notsent">Deze waarnemingen zijn al eens verstuurd. U kunt ze slechts 1x versturen.</string>
     <string name="send_prerequisite_internet">Er is op dit moment geen internet beschikbaar. Probeer het later nog eens.</string>
-    <string name="send_are_you_sure">U kunt elke logboek entry slechts 1x versturen. Weet u zeker dat u dit nu wilt doen?</string>
+    <string name="send_are_you_sure">Bij het versturen van de logboek entry worden ook uw naam en email adres doorgestuurd. Deze worden uitsluitend gebruikt om uw inzending te valideren. U kunt elke logboek entry slechts 1x versturen. Weet u zeker dat u dit nu wilt doen?</string>
     <string name="send_mailadres_not_ok">Het emailadres dat u hebt opgegeven is helaas niet in orde. Verander de setting om de waarnemingen zelf te ontvangen of corrigeer het emailadres.</string>
     <string name="send_mailadres_null">U hebt helaas geen emailadres opgegeven. Verander de setting om de waarnemingen zelf te ontvangen of geef een emailadres.</string>
     <string name="send_succesful">De waarnemingen zijn verstuurd</string>

@@ -19,6 +19,8 @@ import nl.imarinelife.lib.utility.Utils;
 import nl.imarinelife.lib.utility.dialogs.AreYouSureDialogFragment;
 import nl.imarinelife.lib.utility.dialogs.AreYouSureDialogFragment.OnYesListener;
 import nl.imarinelife.lib.utility.mail.MailSightingsSender;
+
+import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
@@ -27,6 +29,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -624,15 +627,13 @@ public class DivingLogSightingsListFragment extends ListFragment
 		Log.d(TAG,
 				"onLoadFinished SingletonCursor["
 						+ (SingletonCursor.getCursor() == null ? "null"
-								: SingletonCursor.getCursor().getCount()) + "]");
+						: SingletonCursor.getCursor().getCount()) + "]");
 
 		if (isResumed()) {
 			setListShown(true);
-		} else {
-			if (!isDetached())
+		} else if (!isDetachedOrVisible()) {
 				setListShownNoAnimation(true);
 		}
-
 	}
 
 	public void onLoaderReset(Loader<Cursor> loader) {
@@ -685,16 +686,16 @@ public class DivingLogSightingsListFragment extends ListFragment
 
 	public void refreshProgress(int percentage, Cursor cursor) {
 		Log.d(TAG, "Progress [" + percentage + "]");
-		if (!isDetached()) {
-			SingletonCursor.swapCursor(cursor, false);
-			progressbar.setProgress(percentage);
-			progressbar.refreshDrawableState();
-		}
+			if (!isDetachedOrVisible()) {
+                SingletonCursor.swapCursor(cursor, false);
+                progressbar.setProgress(percentage);
+                progressbar.refreshDrawableState();
+            }
 	}
 
 	public void removeHeader() {
-		if (!isDetached())
-			header.setVisibility(View.GONE);
+			if (!isDetachedOrVisible())
+                header.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -764,6 +765,15 @@ public class DivingLogSightingsListFragment extends ListFragment
 		dbHelper.updateOrCreateEntriesForGroupInDive((int) diveId, groupName,
 				value);
 		refresh();
+	}
+
+	@TargetApi(14)
+	private boolean isDetachedOrVisible(){
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			return isDetached();
+		}else {
+			return isVisible();
+		}
 	}
 
 }

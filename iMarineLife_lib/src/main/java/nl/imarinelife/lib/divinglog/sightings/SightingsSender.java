@@ -80,6 +80,7 @@ public abstract class SightingsSender {
 					text = (LibApp.getCurrentResources()
 							.getString(R.string.send_failed));
 				}
+				Log.d(TAG,text);
 				Toast.makeText(MainActivity.me, text, Toast.LENGTH_LONG).show();
 				
 			}

@@ -1,20 +1,25 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/diving_log_next"
         android:icon="@android:drawable/ic_menu_more"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/more_identity_title"/>
+        android:title="@string/more_identity_title"
+        tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/diving_log_remarks"
         android:icon="@drawable/ic_action_new_label"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/remarks"/> 
+        android:title="@string/remarks"
+        tools:ignore="AppCompatResource" />
      <item
         android:id="@+id/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:orderInCategory="100"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/action_settings"/>
+        android:title="@string/action_settings"
+         tools:ignore="AppCompatResource" />
 
 </menu>

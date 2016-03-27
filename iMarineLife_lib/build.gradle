@@ -13,7 +13,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 12
         targetSdkVersion 22
     }
     signingConfigs {
@@ -34,6 +34,10 @@ android {
             debuggable true
         }
     }
+    lintOptions {
+        ignoreWarnings true
+        disable 'InvalidPackage'
+    }
 
 }
 
@@ -43,4 +47,6 @@ dependencies {
     compile project(':zip_file')
     compile project(':downloader_library')
     //compile 'com.android.support:support-v4:22.0.0'
+    compile files('libs/activation.jar')
+    compile files('libs/mail.jar')
 }

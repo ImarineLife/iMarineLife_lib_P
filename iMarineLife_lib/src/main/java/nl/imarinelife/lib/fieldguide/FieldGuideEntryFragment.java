@@ -152,7 +152,7 @@ public class FieldGuideEntryFragment extends Fragment {
         }
 
         if(bar!=null) {
-            bar.setHomeButtonEnabled(true);
+			(MainActivity.me).setHomeButtonEnabled(true);
         }else{
             Log.d(TAG, "no actionbar to set Homebutton enabled for");
         }
@@ -283,7 +283,7 @@ public class FieldGuideEntryFragment extends Fragment {
         }
 
         if(bar!=null) {
-            bar.setHomeButtonEnabled(true);
+			(MainActivity.me).setHomeButtonEnabled(true);
             int backStackEntryCount = getActivity().getFragmentManager().getBackStackEntryCount();
             Log.d(TAG,
                     "backstackEntryCount[" + backStackEntryCount + "]");

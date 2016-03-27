@@ -348,7 +348,9 @@ public class SingletonCursor implements Cursor {
 
     @Override
     public Uri getNotificationUri() {
-        return myCursor.getNotificationUri();
+        // not implemented because not used and possible from sdk version 19
+		return null;
+		//return myCursor.getNotificationUri();
     }
 
     @Override

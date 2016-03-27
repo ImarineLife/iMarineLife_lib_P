@@ -105,7 +105,7 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 	public static final int DATABASE_VERSION = 4;
 	
 	private static final String FIELDGUIDE = "FieldGuide";
-	private static final String SIGHTINGS = "Sightings";
+	public static final String SIGHTINGS = "Sightings";
 	private static final String FIELDGUIDE_AS_F = FIELDGUIDE + " as F";
 	private static final String SIGHTINGS_AS_S = SIGHTINGS + " as S";
 
@@ -400,7 +400,7 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 		return null;
 	}
 
-	public boolean deleteAllFieldGuide() {
+	public boolean deleteAllFieldGuideForCurrentCatalog() {
 		int doneDelete = 0;
 		if (dbExternal != null) {
 			String selection = KEY_CATNAME + " = '"
@@ -1270,6 +1270,7 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 		}
 	}
 
+
 	public boolean shouldShowStatus() {
 
 		if (initializing)
@@ -1301,174 +1302,67 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 				if (!initializing) {
 					initializing = true;
 					Catalog catalog = LibApp.getInstance().getCurrentCatalog();
-
 					Resources resources = params[0];
 					int done = 0;
-					deleteAllFieldGuide();
-					boolean first = true;
-					done = 0;
-					int id = 0;
-					for (int i = 0; i < LibApp.getInstance()
-							.getCurrentCatalog().getLatinIds().length; i++) {
-						fieldguideConsistent = false;
-						id = catalog.getIds()[i];
-						FieldGuideEntry entry = new FieldGuideEntry(id,
-								LibApp.getCurrentCatalogName(),
-								resources.getString(LibApp.getInstance()
-										.getCurrentCatalog().getLatinIds()[i]),
-								catalog.getCommonToGroupMapping().get(
-										"common" + id), "common" + id, "descr"
-										+ id,
-								LibApp.getInstance().getCurrentCatalog()
-										.getCheckValues()[i], i);
-						insertFieldGuide(entry);
-						done++;
-						if (first && (done % 5 == 0 || done < 10)) {
-							publishProgress(done, LibApp.getInstance()
-									.getCurrentCatalog().getLatinIds().length);
+					boolean recordsWereDeleted = deleteAllFieldGuideForCurrentCatalog();
+
+					if(catalog!=null) {
+						// Sightings
+						Set<String> sightingsSet = catalog.getValuesMapping().keySet();
+						Set<String> checkedValuesSet = getCheckedValuesSet();
+
+						// times 2 for the sightings is to keep track of the getting the data (1) and
+						// writing the data (2)
+						int todo = (
+								LibApp.getInstance().getCurrentCatalog().getLatinIds().length
+										+ (!recordsWereDeleted ? 0 :
+										((sightingsSet.size() + checkedValuesSet.size()) * 2)
+								)
+						);
+
+						//now first initialize the fieldguide
+						done = 0;
+						int id = 0;
+						for (int i = 0; i < LibApp.getInstance()
+								.getCurrentCatalog().getLatinIds().length; i++) {
+							fieldguideConsistent = false;
+							id = catalog.getIds()[i];
+							FieldGuideEntry entry = new FieldGuideEntry(id,
+									LibApp.getCurrentCatalogName(),
+									resources.getString(LibApp.getInstance()
+											.getCurrentCatalog().getLatinIds()[i]),
+									catalog.getCommonToGroupMapping().get(
+											"common" + id), "common" + id, "descr"
+											+ id,
+									LibApp.getInstance().getCurrentCatalog()
+											.getCheckValues()[i], i);
+							insertFieldGuide(entry);
+							done++;
+							if (done % 5 == 0 || done < 10) {
+								publishProgress(done, todo);
+							}
 						}
-					}
-					first = false;
 
-					return done;
-				}
-				return 0;
-
-			}
-
-			protected void onPostExecute(Integer result) {
-				initializing = false;
-				fieldguideConsistent = true;
-				Toast.makeText(
-						MainActivity.me,
-						LibApp.getCurrentResources().getString(
-								R.string.fieldguide_uptotdate),
-						Toast.LENGTH_SHORT).show();
-				FieldGuideListFragment fragment = (FieldGuideListFragment) MainActivity.me
-						.getFragment("FieldGuideListFragment");
-				if (fragment != null) {
-					fragment.removeHeader();
-				}
-				DivingLogSightingsListFragment dlfragment = (DivingLogSightingsListFragment) MainActivity.me
-						.getFragment("DivingLogSightingsListFragment");
-				if (dlfragment != null) {
-					dlfragment.removeHeader();
-				}
-			}
-
-			@Override
-			protected void onProgressUpdate(Integer... values) {
-				// runs on UI thread on publishProgress
-				Log.d(TAG, values[0] + " " + values[1]);
-				int perc = values[0] * 100 / values[1];
-
-				FieldGuideListFragment fragment = (FieldGuideListFragment) MainActivity.me
-						.getFragment("FieldGuideListFragment");
-				if (fragment != null) {
-					/*
-					 * Cursor cursor = queryFieldGuide(null, null, null, null);
-					 */
-					fragment.refreshProgress(perc, fragment.getActualCursor());
-				}
-				DivingLogSightingsListFragment dlfragment = (DivingLogSightingsListFragment) MainActivity.me
-						.getFragment("DivingLogSightingsListFragment");
-				if (dlfragment != null) {
-					dlfragment.refreshProgress(perc,
-							dlfragment.getActualCursor());
-				}
-				super.onProgressUpdate(values);
-			}
-
-		};
-
-		if (!initializing) {
-			task.execute(resources);
-		}
-	}
-
-	public void fillFieldsForVersion004() {
-		resetLocaleDependentContent();
-	}
-
-	public void resetLocaleDependentContent() {
-		resetLocaleDependentContent(false);
-	}
-	
-	public void resetLocaleDependentContent(boolean fieldGuideOnly) {
-		AsyncTask<Boolean, Integer, Integer> task = new AsyncTask<Boolean, Integer, Integer>() {
-			@Override
-			protected Integer doInBackground(Boolean... booleans) {
-				boolean fieldGuideOnly = booleans[0];
-				Log.d(TAG, "resetLocaleDependentContent fieldGuideOnly["+fieldGuideOnly+"]");
-				if (!initializing) {
-					initializing = true;
-					Catalog catalog = LibApp.getInstance().getCurrentCatalog();
-
-					// FieldGuide
-					Set<String> groupIds = catalog.getGroupIdMapping().keySet();
-					Set<String> commonIds = catalog.getCommonIdMapping()
-							.keySet();
-					Set<String> checkValueIds = new HashSet<String>(
-							Arrays.asList(catalog.getCheckValues()));
-
-					// Sightings
-					Set<String> sightingsSet = catalog.getValuesMapping()
-							.keySet();
-					Set<String> checkedValuesSet = getCheckedValuesSet();
-
-					// times 2 is to keep track of the getting the data (1) and
-					// writing the date (2)
-					int todo = (
-							  groupIds.size() 
-							+ commonIds.size()
-							+ checkValueIds.size() 
-							+ (fieldGuideOnly ? 0 : 
-								(sightingsSet.size() + checkedValuesSet.size())
-							   )
-							) * 2;
-
-					int fieldGuideDone = resetLocaleDependentContentInFieldGuide(
-							groupIds, commonIds, checkValueIds, todo);
-					int sightingsDone = 0;
-					if(!fieldGuideOnly){
-						sightingsDone = fieldGuideDone == -1 ? -1
-							: resetLocaleDependentContentInSightings(
+						// then reset any fields in the sightingsmap that are dependent on locale or catalogcontent
+						int sightingsDone = 0;
+						if(recordsWereDeleted){
+							sightingsDone = resetLocaleDependentContentInSightings(
 									sightingsSet, checkedValuesSet,
-									fieldGuideDone, todo);
+									done, todo);
+						}
+
+						return done + sightingsDone;
+
 					}
-					
-					return (fieldGuideDone == -1 || sightingsDone == -1) ? -1
-							: fieldGuideDone + sightingsDone;
 				}
 				return 0;
 
-			}
-
-			private Set<String> getCheckedValuesSet() {
-				String[] columns = { KEY_CS_CHECKEDVALUES };
-				String selection = KEY_CATNAME + " = '"
-						+ LibApp.getCurrentCatalogName() + "'";
-				Cursor checkedValuesCursor = queryDistinct(SIGHTINGS, columns,
-						selection, KEY_CS_CHECKEDVALUES);
-				Set<String> checkedValuesSet = new HashSet<String>();
-
-				if (checkedValuesCursor != null
-						&& checkedValuesCursor.getCount() > 0) {
-					do {
-						String checkedValues = checkedValuesCursor.getString(0);
-						if (checkedValues != null && checkedValues.length() > 0) {
-							checkedValuesSet.add(checkedValues);
-						}
-					} while (checkedValuesCursor.moveToNext());
-					checkedValuesCursor.close();
-				}
-
-				return checkedValuesSet;
 			}
 
 			private int resetLocaleDependentContentInSightings(
 					Set<String> sightingValues, Set<String> checkedValuesSet,
 					int done, int todo) {
+
 				Catalog catalog = LibApp.getInstance().getCurrentCatalog();
 
 				List<SQLUpdateObject> list = new ArrayList<SQLUpdateObject>();
@@ -1479,10 +1373,10 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 							.getResourcedSightingValue(catalog.getName(),
 									sightingValue);
 					ContentValues values = new ContentValues();
-					values.put(KEY_SHOW_SIGHTING_VALUE, showSightingValue);
-					String where = KEY_CATNAME + " = '"
+					values.put(FieldGuideAndSightingsEntryDbHelper.KEY_SHOW_SIGHTING_VALUE, showSightingValue);
+					String where = FieldGuideAndSightingsEntryDbHelper.KEY_CATNAME + " = '"
 							+ LibApp.getCurrentCatalogName() + "' AND "
-							+ KEY_SIGHTING_VALUE + " = '" + sightingValue + "'";
+							+ FieldGuideAndSightingsEntryDbHelper.KEY_SIGHTING_VALUE + " = '" + sightingValue + "'";
 					SQLUpdateObject update = new SQLUpdateObject(values, where);
 					list.add(update);
 					done++;
@@ -1502,10 +1396,10 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 							.getCsStringFromList(showCheckedValuesList);
 
 					ContentValues values = new ContentValues();
-					values.put(KEY_SHOW_CS_CHECKEDVALUES, showCheckedValues);
-					String where = KEY_CATNAME + " = '"
+					values.put(FieldGuideAndSightingsEntryDbHelper.KEY_SHOW_CS_CHECKEDVALUES, showCheckedValues);
+					String where = FieldGuideAndSightingsEntryDbHelper.KEY_CATNAME + " = '"
 							+ LibApp.getCurrentCatalogName() + "' AND "
-							+ KEY_CS_CHECKEDVALUES + " = '" + checkedValues
+							+ FieldGuideAndSightingsEntryDbHelper.KEY_CS_CHECKEDVALUES + " = '" + checkedValues
 							+ "'";
 					SQLUpdateObject update = new SQLUpdateObject(values, where);
 					list.add(update);
@@ -1517,7 +1411,190 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 
 				}
 
-				int updated = updateValues(SIGHTINGS, list);
+				int updated = updateValues(FieldGuideAndSightingsEntryDbHelper.SIGHTINGS, list);
+				// doneHere added because the writing of the data (doneHere)
+				// should be counted twice in the progressbar
+				if ((done % 5 == 0 || done < 10)) {
+					publishProgress(done + doneHere, todo);
+				}
+				return updated == -1 ? -1 : done + doneHere;
+
+			}
+
+
+			protected void onPostExecute(Integer result) {
+				initializing = false;
+				fieldguideConsistent = true;
+				Preferences.setInt(Preferences.DATAVERSION_FIELDGUIDEANDSIGHTINGS, Catalog.DATAVERSION_FIELDGUIDEANDSIGHTINGS);
+
+				if(MainActivity.me!=null) {
+					Toast.makeText(
+							MainActivity.me,
+							LibApp.getCurrentResources().getString(
+									R.string.fieldguide_uptotdate),
+							Toast.LENGTH_SHORT).show();
+					FieldGuideListFragment fragment = (FieldGuideListFragment) MainActivity.me
+							.getFragment("FieldGuideListFragment");
+					if (fragment != null) {
+						fragment.removeHeader();
+					}
+					DivingLogSightingsListFragment dlfragment = (DivingLogSightingsListFragment) MainActivity.me
+							.getFragment("DivingLogSightingsListFragment");
+					if (dlfragment != null) {
+						dlfragment.removeHeader();
+					}
+				}
+			}
+
+			@Override
+			protected void onProgressUpdate(Integer... values) {
+				// runs on UI thread on publishProgress
+				Log.d(TAG, values[0] + " " + values[1]);
+				int perc = values[0] * 100 / values[1];
+
+				if(MainActivity.me!=null) {
+					FieldGuideListFragment fragment = (FieldGuideListFragment) MainActivity.me
+							.getFragment("FieldGuideListFragment");
+					if (fragment != null) {
+						/*
+						 * Cursor cursor = queryFieldGuide(null, null, null, null);
+						 */
+						fragment.refreshProgress(perc, fragment.getActualCursor());
+					}
+					DivingLogSightingsListFragment dlfragment = (DivingLogSightingsListFragment) MainActivity.me
+							.getFragment("DivingLogSightingsListFragment");
+					if (dlfragment != null) {
+						dlfragment.refreshProgress(perc,
+								dlfragment.getActualCursor());
+					}
+					super.onProgressUpdate(values);
+				}
+			}
+
+		};
+
+		if (!initializing) {
+			task.execute(resources);
+		}
+	}
+
+	public void fillFieldsForVersion004() {
+		resetLocaleDependentContent();
+	}
+
+	public void resetLocaleDependentContent() {
+		resetLocaleDependentContent(true, true);
+	}
+	
+	public void resetLocaleDependentContent(final boolean doFieldGuideUpdate, final boolean doSightingsUpdate) {
+
+		Log.d(TAG, "resetLocaleDependentContent doFieldGuideUpdate[" + doFieldGuideUpdate + "] do SightingsUpdate[" + doSightingsUpdate + "] running asynchronously");
+
+		AsyncTask<Boolean, Integer, Integer> task = new AsyncTask<Boolean, Integer, Integer>() {
+			@Override
+			protected Integer doInBackground(Boolean... booleans) {
+				boolean doFieldGuideUpdate = booleans[0];
+				boolean doSightingsUpdate = booleans[1];
+				if (!initializing) {
+					initializing = true;
+					Catalog catalog = LibApp.getInstance().getCurrentCatalog();
+
+					// FieldGuide
+					Set<String> groupIds = catalog.getGroupIdMapping().keySet();
+					Set<String> commonIds = catalog.getCommonIdMapping().keySet();
+					Set<String> checkValueIds = new HashSet<String>(Arrays.asList(catalog.getCheckValues()));
+
+					// Sightings
+					Set<String> sightingsSet = catalog.getValuesMapping().keySet();
+					Set<String> checkedValuesSet = getCheckedValuesSet();
+
+					// times 2 is to keep track of the getting the data (1) and
+					// writing the data (2)
+					int todo = (
+							(!doFieldGuideUpdate ? 0 :
+								( groupIds.size()
+								+ commonIds.size()
+								+ checkValueIds.size()) )
+							+ (!doSightingsUpdate ? 0 :
+								(sightingsSet.size() + checkedValuesSet.size())
+							   )
+							) * 2;
+
+
+
+					int fieldGuideDone=0;
+					if(doFieldGuideUpdate) {
+						fieldGuideDone = resetLocaleDependentContentInFieldGuide(
+								groupIds, commonIds, checkValueIds, todo);
+					}
+					int sightingsDone = 0;
+					if(doSightingsUpdate){
+						sightingsDone = fieldGuideDone == -1 ? -1
+							: resetLocaleDependentContentInSightings(
+									sightingsSet, checkedValuesSet,
+									fieldGuideDone, todo);
+					}
+					
+					return (fieldGuideDone == -1 || sightingsDone == -1) ? -1
+							: fieldGuideDone + sightingsDone;
+				}
+				return 0;
+
+			}
+
+			private int resetLocaleDependentContentInSightings(
+					Set<String> sightingValues, Set<String> checkedValuesSet,
+					int done, int todo) {
+
+				Catalog catalog = LibApp.getInstance().getCurrentCatalog();
+
+				List<SQLUpdateObject> list = new ArrayList<SQLUpdateObject>();
+				int doneHere = 0;
+
+				for (String sightingValue : sightingValues) {
+					String showSightingValue = Sighting
+							.getResourcedSightingValue(catalog.getName(),
+									sightingValue);
+					ContentValues values = new ContentValues();
+					values.put(FieldGuideAndSightingsEntryDbHelper.KEY_SHOW_SIGHTING_VALUE, showSightingValue);
+					String where = FieldGuideAndSightingsEntryDbHelper.KEY_CATNAME + " = '"
+							+ LibApp.getCurrentCatalogName() + "' AND "
+							+ FieldGuideAndSightingsEntryDbHelper.KEY_SIGHTING_VALUE + " = '" + sightingValue + "'";
+					SQLUpdateObject update = new SQLUpdateObject(values, where);
+					list.add(update);
+					done++;
+					doneHere++;
+
+					if ((done % 5 == 0 || done < 10)) {
+						publishProgress(done, todo);
+					}
+
+				}
+				for (String checkedValues : checkedValuesSet) {
+					List<String> showCheckedValuesList = Sighting
+							.getResourcedCheckedValues(
+									catalog.getName(),
+									Sighting.getCheckedValuesFromCs(checkedValues));
+					String showCheckedValues = Sighting
+							.getCsStringFromList(showCheckedValuesList);
+
+					ContentValues values = new ContentValues();
+					values.put(FieldGuideAndSightingsEntryDbHelper.KEY_SHOW_CS_CHECKEDVALUES, showCheckedValues);
+					String where = FieldGuideAndSightingsEntryDbHelper.KEY_CATNAME + " = '"
+							+ LibApp.getCurrentCatalogName() + "' AND "
+							+ FieldGuideAndSightingsEntryDbHelper.KEY_CS_CHECKEDVALUES + " = '" + checkedValues
+							+ "'";
+					SQLUpdateObject update = new SQLUpdateObject(values, where);
+					list.add(update);
+					done++;
+					doneHere++;
+					if ((done % 5 == 0 || done < 10)) {
+						publishProgress(done, todo);
+					}
+
+				}
+
+				int updated = updateValues(FieldGuideAndSightingsEntryDbHelper.SIGHTINGS, list);
 				// doneHere added because the writing of the data (doneHere)
 				// should be counted twice in the progressbar
 				if ((done % 5 == 0 || done < 10)) {
@@ -1660,9 +1737,31 @@ public class FieldGuideAndSightingsEntryDbHelper implements DbHelper {
 		};
 
 		if (!initializing) {
-			task.execute(fieldGuideOnly);
+			task.execute(doFieldGuideUpdate, doSightingsUpdate);
 		}
 
+	}
+
+	private Set<String> getCheckedValuesSet() {
+		String[] columns = { KEY_CS_CHECKEDVALUES };
+		String selection = KEY_CATNAME + " = '"
+				+ LibApp.getCurrentCatalogName() + "'";
+		Cursor checkedValuesCursor = queryDistinct(SIGHTINGS, columns,
+				selection, KEY_CS_CHECKEDVALUES);
+		Set<String> checkedValuesSet = new HashSet<String>();
+
+		if (checkedValuesCursor != null
+				&& checkedValuesCursor.getCount() > 0) {
+			do {
+				String checkedValues = checkedValuesCursor.getString(0);
+				if (checkedValues != null && checkedValues.length() > 0) {
+					checkedValuesSet.add(checkedValues);
+				}
+			} while (checkedValuesCursor.moveToNext());
+			checkedValuesCursor.close();
+		}
+
+		return checkedValuesSet;
 	}
 
 	private static class SDCardDatabaseHelper extends SDCardSQLiteOpenHelper {
