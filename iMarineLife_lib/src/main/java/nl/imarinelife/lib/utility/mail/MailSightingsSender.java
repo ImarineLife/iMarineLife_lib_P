@@ -391,9 +391,14 @@ public class MailSightingsSender extends SightingsSender {
 					cell = row.createCell(COL_NAME);
 					cell.setCellValue(ppart.profilePart
 							.getShowName());
+					String stayId = ppart.profilePart.stayId;
+					Log.d(TAG, "STAYID["+stayId+"]" );
+					Log.d(TAG, ppart.toString());
+					Log.d(TAG, "STAYID contains 'temp' ["+stayId.contains("temp")+"]" );
+
 					cell.setCellStyle(bold);
 					cell = row.createCell(COL_VALUE);
-					cell.setCellValue(ppart.stayValueInMeters + " meter");
+					cell.setCellValue(ppart.stayValueInMeters + (stayId.contains("temp") ? " graden" :" meter"));
 					rownr++;
 					cell.setCellStyle(simple);
 				}
